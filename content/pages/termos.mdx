@@ -1,0 +1,157 @@
+import { StaticPageLayout } from "@/components/blog/static-page-layout";
+
+## 1. Aceitação dos Termos
+
+Ao acessar ou utilizar o **CNPJ Aqui**, você concorda com estes Termos de Uso.
+
+Se não concordar com alguma parte, recomendamos que não utilize o serviço. O uso da plataforma implica concordância integral com as condições abaixo.
+
+---
+
+## 2. O que é o CNPJ Aqui
+
+O **CNPJ Aqui** é um serviço online que facilita a **consulta de dados públicos de empresas** e a **geração do Cartão CNPJ em PDF**, a partir de um CNPJ informado pelo usuário.
+
+Na prática, o CNPJ Aqui:
+- Consulta bases públicas de dados
+- Organiza as informações de forma clara
+- Gera um documento em PDF para uso prático
+
+O serviço **não substitui** a Receita Federal e **não realiza registros, alterações ou regularizações cadastrais**.
+
+---
+
+## 3. Origem e natureza das informações
+
+Os dados exibidos na plataforma são obtidos por meio de **fontes públicas oficiais**, acessadas via APIs de consulta.
+
+O CNPJ Aqui:
+- Não cria dados
+- Não altera informações oficiais
+- Não garante que os dados estejam atualizados em tempo real, pois dependem das bases públicas consultadas
+
+O layout do Cartão CNPJ segue o padrão visual do documento oficial, com finalidade informativa e operacional.
+
+---
+
+## 4. Planos, créditos e funcionamento
+
+O serviço funciona por meio de **créditos de consulta**.
+
+### Como funciona:
+- Cada consulta consome créditos
+- Há um número inicial de consultas para teste
+- Créditos podem ser adquiridos em pacotes ou planos recorrentes
+
+Créditos de planos recorrentes:
+- São renovados periodicamente
+- Não se acumulam se não forem usados no período
+
+Créditos avulsos:
+- Não expiram
+
+As condições e valores vigentes são sempre os exibidos no site no momento da contratação.
+
+---
+
+## 5. Pagamentos
+
+Os pagamentos são realizados via **PIX**, conforme instruções exibidas no site.
+
+A liberação dos créditos ocorre após a confirmação do pagamento. Em alguns casos, pode haver um pequeno prazo operacional para processamento.
+
+O CNPJ Aqui não se responsabiliza por atrasos causados por falhas em sistemas de pagamento de terceiros.
+
+---
+
+## 6. Como o serviço pode ser usado
+
+Você pode utilizar o CNPJ Aqui para:
+- Consultar dados públicos de empresas
+- Gerar e baixar o Cartão CNPJ em PDF
+- Imprimir ou compartilhar os documentos gerados
+- Acompanhar seu histórico de consultas
+
+O uso deve respeitar a legislação vigente e estes Termos.
+
+---
+
+## 7. O que não é permitido
+
+Não é permitido:
+- Utilizar o serviço para fins ilegais ou fraudulentos
+- Tentar burlar limites de uso ou créditos
+- Automatizar consultas sem autorização
+- Realizar scraping ou engenharia reversa
+- Revender ou compartilhar acessos
+- Sobrecarregar a plataforma com requisições excessivas
+
+O descumprimento pode resultar na suspensão ou encerramento da conta, sem direito a reembolso.
+
+---
+
+## 8. Privacidade e dados
+
+O CNPJ Aqui trabalha apenas com **dados públicos de empresas**.
+
+As consultas realizadas ficam vinculadas à conta do usuário.  
+Não vendemos, não comercializamos e não compartilhamos dados de consulta com terceiros, exceto quando exigido por lei.
+
+---
+
+## 9. Disponibilidade do serviço
+
+Nos esforçamos para manter o serviço funcionando de forma contínua.
+
+Ainda assim, podem ocorrer interrupções por:
+- Manutenção técnica
+- Falhas operacionais
+- Indisponibilidade das fontes públicas consultadas
+
+Não garantimos disponibilidade ininterrupta.
+
+---
+
+## 10. Limitação de responsabilidade
+
+O CNPJ Aqui não se responsabiliza por:
+- Decisões tomadas com base nas informações consultadas
+- Uso inadequado dos documentos gerados
+- Dados incorretos ou desatualizados nas bases públicas
+- Prejuízos diretos ou indiretos decorrentes do uso do serviço
+
+O serviço tem caráter **informativo e operacional**, não substituindo análises jurídicas, contábeis ou fiscais.
+
+---
+
+## 11. Alterações nos Termos
+
+Estes Termos podem ser alterados a qualquer momento.
+
+Sempre que houver mudanças relevantes, os usuários serão informados pelos canais oficiais. O uso contínuo do serviço após a atualização implica concordância com os novos termos.
+
+---
+
+## 12. Cancelamento
+
+Planos recorrentes podem ser cancelados a qualquer momento, sem multa.
+
+- Créditos avulsos não são reembolsáveis
+- Créditos não são convertidos em dinheiro
+- O cancelamento não gera direito a reembolso de valores já pagos
+
+---
+
+## 13. Contato
+
+Em caso de dúvidas, suporte ou solicitações relacionadas a estes Termos, o contato deve ser feito pelos canais oficiais informados no site.
+
+---
+
+export default function MDXPage({ children }) {
+  return (
+    <StaticPageLayout title="Termos de Uso" lastUpdated="Dezembro de 2025">
+      {children}
+    </StaticPageLayout>
+  );
+}
