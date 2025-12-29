@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -30,9 +31,15 @@ function formatDate(date: string): string {
 
 export function QueryResult({ data, onNew }: QueryResultProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showCreditAlert, setShowCreditAlert] = useState(false);
+  const router = useRouter();
 
   async function handleDownloadPDF() {
     setIsDownloading(true);
+    setErrorMessage(null);
+    setShowCreditAlert(false);
+
     try {
       const response = await fetch("/api/pdf/cartao-cnpj", {
         method: "POST",
@@ -43,6 +50,18 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
       });
 
       if (!response.ok) {
+        if (response.status === 402) {
+          const error = await response.json();
+          logger.warn(
+            { status: response.status, cnpj: maskCNPJ(data.cnpj) },
+            "Sem créditos disponíveis",
+          );
+          setShowCreditAlert(true);
+          setErrorMessage(error.error || "Você não tem créditos disponíveis.");
+          router.refresh();
+          return;
+        }
+
         logger.error(
           { status: response.status, cnpj: maskCNPJ(data.cnpj) },
           "Erro ao gerar PDF - resposta não ok",
@@ -64,12 +83,14 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
       events.pdfGenerated(data.cnpj);
 
       logger.info({ cnpj: maskCNPJ(data.cnpj) }, "PDF gerado com sucesso");
+
+      router.refresh();
     } catch (error) {
       logger.error(
         { error, cnpj: maskCNPJ(data.cnpj), operation: "downloadPDF" },
         "Erro ao baixar PDF",
       );
-      alert("Erro ao gerar PDF. Tente novamente.");
+      setErrorMessage("Erro ao gerar PDF. Tente novamente.");
     } finally {
       setIsDownloading(false);
     }
@@ -147,6 +168,39 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
         </div>
       </div>
 
+      {showCreditAlert && (
+        <div className="bg-warning/10 border border-warning/20 rounded-xl p-6">
+          <div className="flex items-start gap-3">
+            <Icons.alertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-foreground mb-1">
+                Créditos insuficientes
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {errorMessage ||
+                  "Você não tem créditos disponíveis para gerar o PDF. Adquira mais créditos para continuar."}
+              </p>
+              <a
+                href="/planos"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                <Icons.coins className="w-4 h-4" />
+                Ver Planos
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {errorMessage && !showCreditAlert && (
+        <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <Icons.alertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+            <p className="text-sm text-foreground">{errorMessage}</p>
+          </div>
+        </div>
+      )}
+
       <div className="flex gap-3">
         <Button
           onClick={handleDownloadPDF}
@@ -155,7 +209,7 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
         >
           {isDownloading ? (
             <>
-              <Icons.spinner className="w-4 h-4" />
+              <Icons.spinner className="w-4 h-4 animate-spin" />
               Gerando PDF...
             </>
           ) : (

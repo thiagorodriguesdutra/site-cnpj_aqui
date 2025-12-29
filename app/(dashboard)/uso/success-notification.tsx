@@ -9,6 +9,9 @@ export function SuccessNotification() {
   const router = useRouter();
   const [show, setShow] = useState(false);
 
+  const credits = searchParams.get("credits");
+  const planName = searchParams.get("plan");
+
   useEffect(() => {
     if (searchParams.get("success") === "true") {
       setShow(true);
@@ -29,10 +32,12 @@ export function SuccessNotification() {
         <Icons.checkCircle className="h-5 w-5 text-success shrink-0 mt-0.5" />
         <div className="flex-1">
           <h3 className="font-semibold text-foreground mb-1">
-            Créditos adicionados com sucesso
+            Compra realizada com sucesso!
           </h3>
           <p className="text-sm text-muted-foreground">
-            Seus créditos foram liberados e já estão disponíveis para uso.
+            {credits && planName
+              ? `${credits} créditos do plano "${planName}" foram adicionados ao seu saldo.`
+              : "Seus créditos foram liberados e já estão disponíveis para uso."}
           </p>
         </div>
         <button
