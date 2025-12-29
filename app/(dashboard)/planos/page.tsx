@@ -175,9 +175,10 @@ export default async function PlanosPage() {
                     </ul>
                     <BuyButton
                       planId={plan.id}
-                      planName=""
+                      planName={`${plan.credits} Créditos`}
                       price={plan.price}
                       credits={plan.credits}
+                      planType={plan.type}
                     />
                   </div>
                 );
@@ -276,10 +277,13 @@ export default async function PlanosPage() {
                     </ul>
                     <BuyButton
                       planId={plan.id}
-                      planName=""
+                      planName={
+                        plan.type === "monthly" ? "Plano Mensal" : "Plano Anual"
+                      }
                       price={plan.price}
                       credits={plan.credits}
                       isSubscription
+                      planType={plan.type}
                     />
                   </div>
                 );

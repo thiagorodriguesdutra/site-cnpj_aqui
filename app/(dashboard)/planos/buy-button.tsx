@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { purchasePlan } from "@/app/_actions/plans/purchase";
+import { useState } from "react";
 import { Icons } from "@/components/icons";
 import { events } from "@/lib/analytics/umami";
 
@@ -12,6 +11,7 @@ interface BuyButtonProps {
   price: string;
   credits?: number;
   isSubscription?: boolean;
+  planType?: string;
 }
 
 export function BuyButton({
@@ -20,35 +20,26 @@ export function BuyButton({
   price,
   credits,
   isSubscription = false,
+  planType,
 }: BuyButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const [, startTransition] = useTransition();
 
-  async function handlePurchase() {
+  function handlePurchase() {
     setIsLoading(true);
-    setError(null);
 
-    try {
-      events.packageClicked(planId, Number(price));
-      events.packageSelected(planId);
+    events.packageClicked(planId, Number(price));
+    events.packageSelected(planId);
 
-      const result = await purchasePlan(planId);
+    const params = new URLSearchParams({
+      planId,
+      planName,
+      credits: credits?.toString() || "0",
+      price,
+      ...(planType && { type: planType }),
+    });
 
-      events.paymentConfirmed(planId, result.creditsAdded);
-
-      startTransition(() => {
-        router.push(
-          `/uso?success=true&credits=${result.creditsAdded}&plan=${encodeURIComponent(result.planName)}`,
-        );
-      });
-    } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Erro ao processar compra",
-      );
-      setIsLoading(false);
-    }
+    router.push(`/checkout/preview?${params.toString()}`);
   }
 
   const getButtonText = () => {
@@ -65,26 +56,23 @@ export function BuyButton({
   };
 
   return (
-    <div className="space-y-2">
-      <button
-        type="button"
-        onClick={handlePurchase}
-        disabled={isLoading}
-        className="w-full h-11 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-      >
-        {isLoading ? (
-          <>
-            <Icons.spinner className="h-4 w-4 animate-spin" />
-            Processando...
-          </>
-        ) : (
-          <>
-            <Icons.coins className="h-5 w-5" />
-            {getButtonText()}
-          </>
-        )}
-      </button>
-      {error && <p className="text-sm text-destructive text-center">{error}</p>}
-    </div>
+    <button
+      type="button"
+      onClick={handlePurchase}
+      disabled={isLoading}
+      className="w-full h-11 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+    >
+      {isLoading ? (
+        <>
+          <Icons.spinner className="h-4 w-4 animate-spin" />
+          Processando...
+        </>
+      ) : (
+        <>
+          <Icons.coins className="h-5 w-5" />
+          {getButtonText()}
+        </>
+      )}
+    </button>
   );
 }
