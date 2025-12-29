@@ -8,9 +8,16 @@ import { Icons } from "@/components/icons";
 interface BuyButtonProps {
   planId: string;
   planName: string;
+  credits?: number;
+  isSubscription?: boolean;
 }
 
-export function BuyButton({ planId, planName }: BuyButtonProps) {
+export function BuyButton({
+  planId,
+  planName,
+  credits,
+  isSubscription = false,
+}: BuyButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -36,13 +43,26 @@ export function BuyButton({ planId, planName }: BuyButtonProps) {
     }
   }
 
+  const getButtonText = () => {
+    if (isLoading) return "Processando...";
+
+    if (credits) {
+      if (isSubscription) {
+        return "Assinar agora";
+      }
+      return `Adicionar ${credits} créditos`;
+    }
+
+    return planName ? `Comprar ${planName}` : "Comprar agora";
+  };
+
   return (
     <div className="space-y-2">
       <button
         type="button"
         onClick={handlePurchase}
         disabled={isLoading}
-        className="w-full h-10 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full h-11 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
       >
         {isLoading ? (
           <>
@@ -51,8 +71,8 @@ export function BuyButton({ planId, planName }: BuyButtonProps) {
           </>
         ) : (
           <>
-            <Icons.coins className="h-4 w-4" />
-            Comprar {planName}
+            <Icons.coins className="h-5 w-5" />
+            {getButtonText()}
           </>
         )}
       </button>
