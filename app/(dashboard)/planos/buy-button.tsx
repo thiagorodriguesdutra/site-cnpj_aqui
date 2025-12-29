@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { purchasePlan } from "@/app/_actions/plans/purchase";
 import { Icons } from "@/components/icons";
+import { events } from "@/lib/analytics/umami";
 
 interface BuyButtonProps {
   planId: string;
   planName: string;
+  price: string;
   credits?: number;
   isSubscription?: boolean;
 }
@@ -15,6 +17,7 @@ interface BuyButtonProps {
 export function BuyButton({
   planId,
   planName,
+  price,
   credits,
   isSubscription = false,
 }: BuyButtonProps) {
@@ -28,7 +31,12 @@ export function BuyButton({
     setError(null);
 
     try {
+      events.packageClicked(planId, Number(price));
+      events.packageSelected(planId);
+
       const result = await purchasePlan(planId);
+
+      events.paymentConfirmed(planId, result.creditsAdded);
 
       startTransition(() => {
         router.push(

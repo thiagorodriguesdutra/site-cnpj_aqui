@@ -176,6 +176,7 @@ export default async function PlanosPage() {
                     <BuyButton
                       planId={plan.id}
                       planName=""
+                      price={plan.price}
                       credits={plan.credits}
                     />
                   </div>
@@ -276,6 +277,7 @@ export default async function PlanosPage() {
                     <BuyButton
                       planId={plan.id}
                       planName=""
+                      price={plan.price}
                       credits={plan.credits}
                       isSubscription
                     />
