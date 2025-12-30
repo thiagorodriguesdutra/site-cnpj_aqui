@@ -55,12 +55,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ received: true }, { status: 200 });
     }
 
+    logger.info(
+      { orderId, paymentsCount: order.payments?.length || 0 },
+      "Order processada, verificando payments",
+    );
+
     const payment = order.payments[0];
 
     if (!payment) {
-      logger.warn({ orderId }, "Order sem payment");
+      logger.warn(
+        { orderId, payments: order.payments },
+        "Order sem payment ou payments array vazio",
+      );
       return NextResponse.json({ error: "Payment ausente" }, { status: 400 });
     }
+
+    logger.info(
+      { orderId, paymentId: payment.id },
+      "Payment encontrado, continuando processamento",
+    );
 
     const paymentId = payment.id;
 
@@ -73,11 +86,14 @@ export async function POST(request: Request) {
     }
 
     const externalReference = order.externalReference;
+
+    logger.info({ orderId, externalReference }, "Parseando externalReference");
+
     const parts = externalReference.split("-");
 
     if (parts.length !== 3) {
       logger.error(
-        { externalReference, orderId },
+        { externalReference, orderId, partsLength: parts.length, parts },
         "Formato de externalReference inválido",
       );
       return NextResponse.json(
@@ -85,6 +101,11 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+
+    logger.info(
+      { orderId, userIdPrefix: parts[0], planIdPrefix: parts[1] },
+      "ExternalReference parseado, buscando user e plan",
+    );
 
     const [userIdPrefix, planIdPrefix] = parts;
 
@@ -102,7 +123,13 @@ export async function POST(request: Request) {
 
     if (!user || !plan) {
       logger.error(
-        { userIdPrefix, planIdPrefix, orderId },
+        {
+          userIdPrefix,
+          planIdPrefix,
+          orderId,
+          foundUser: !!user,
+          foundPlan: !!plan,
+        },
         "Usuário ou plano não encontrado a partir do externalReference",
       );
       return NextResponse.json(
@@ -113,6 +140,11 @@ export async function POST(request: Request) {
 
     const userId = user.id;
     const planId = plan.id;
+
+    logger.info(
+      { orderId, userId, planId },
+      "User e plan encontrados, verificando transações recentes",
+    );
 
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
@@ -161,7 +193,14 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
-    logger.error({ error }, "Erro ao processar webhook");
+    logger.error(
+      {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        errorType: error?.constructor?.name,
+      },
+      "Erro ao processar webhook",
+    );
 
     return NextResponse.json(
       { error: "Erro ao processar webhook" },
