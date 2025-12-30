@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { events } from "@/lib/analytics/umami";
 
@@ -29,12 +29,56 @@ export function CheckoutForm({
     qrCodeBase64?: string;
     ticketUrl?: string;
   } | null>(null);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [paymentTimestamp, setPaymentTimestamp] = useState<number | null>(null);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (!pixData || !paymentTimestamp) return;
+
+    async function checkPaymentStatus() {
+      try {
+        const response = await fetch(
+          `/api/payment/check-status?planId=${planId}&since=${paymentTimestamp}`,
+        );
+
+        if (!response.ok) return;
+
+        const data = await response.json();
+
+        if (data.paid) {
+          setPaymentConfirmed(true);
+
+          if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current);
+            pollingIntervalRef.current = null;
+          }
+
+          setTimeout(() => {
+            router.push("/painel");
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar status:", error);
+      }
+    }
+
+    pollingIntervalRef.current = setInterval(checkPaymentStatus, 3000);
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [pixData, paymentTimestamp, planId, router]);
 
   async function handlePixPayment() {
     setIsProcessing(true);
     setError(null);
 
     try {
+      const timestamp = Date.now();
+
       const response = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: {
@@ -62,6 +106,8 @@ export function CheckoutForm({
           ticketUrl: paymentMethodData.ticketUrl,
         });
 
+        setPaymentTimestamp(timestamp);
+
         events.checkoutViewed(orderId, planId, Number(price));
       }
     } catch (err) {
@@ -81,6 +127,37 @@ export function CheckoutForm({
 
     setError("Pagamento com cartão em desenvolvimento. Use PIX por enquanto.");
     setIsProcessing(false);
+  }
+
+  if (paymentConfirmed) {
+    return (
+      <div className="bg-card rounded-xl border border-border shadow-sm p-6 space-y-6">
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <div className="bg-success/10 p-4 rounded-full animate-pulse">
+              <Icons.check className="h-12 w-12 text-success" />
+            </div>
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-foreground">
+              Pagamento Confirmado!
+            </h3>
+            <p className="text-sm text-muted-foreground mt-2">
+              Seus créditos foram adicionados com sucesso
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-success/10 border border-success/20 rounded-lg p-4">
+          <div className="flex items-center gap-3 justify-center">
+            <Icons.zap className="h-5 w-5 text-success shrink-0" />
+            <p className="text-sm text-foreground font-medium">
+              Redirecionando para o painel...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (pixData) {
@@ -130,11 +207,11 @@ export function CheckoutForm({
             <Icons.info className="h-5 w-5 text-info shrink-0 mt-0.5" />
             <div className="text-sm">
               <p className="font-medium text-foreground">
-                Seus créditos serão liberados automaticamente
+                Aguardando confirmação do pagamento...
               </p>
               <p className="text-muted-foreground mt-1">
-                Após a confirmação do pagamento, seus créditos estarão
-                disponíveis em poucos segundos.
+                Após pagar, você será redirecionado automaticamente. Não feche
+                esta página.
               </p>
             </div>
           </div>
