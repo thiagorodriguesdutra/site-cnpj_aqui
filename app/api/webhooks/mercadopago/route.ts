@@ -21,8 +21,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Formato inválido" }, { status: 400 });
     }
 
-    if (type !== "payment") {
-      logger.info({ type }, "Webhook de tipo não processado");
+    if (type !== "order") {
+      logger.info(
+        { type },
+        "Webhook de tipo não processado (apenas order é processado)",
+      );
       return NextResponse.json({ received: true }, { status: 200 });
     }
 
@@ -33,7 +36,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "orderId ausente" }, { status: 400 });
     }
 
-    logger.info({ orderId, type }, "Webhook recebido do Mercado Pago");
+    logger.info({ orderId, type }, "Webhook de order recebido do Mercado Pago");
 
     const paymentAdapter = new MercadoPagoPaymentAdapter();
 
