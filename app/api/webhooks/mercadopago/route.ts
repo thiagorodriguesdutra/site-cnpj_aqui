@@ -1,10 +1,11 @@
 import { and, desc, eq, gte, sql } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { purchasePlan } from "@/app/_actions/plans/purchase";
 import { db } from "@/lib/db";
 import { creditTransactions, plans, users } from "@/lib/db/schema";
 import { createLogger } from "@/lib/logger";
 import { MercadoPagoPaymentAdapter } from "@/lib/payment/adapters/mercadopago.adapter";
+import { addCredits } from "@/lib/services/credits.service";
 
 const logger = createLogger("mercadopago-webhook");
 
@@ -178,16 +179,25 @@ export async function POST(request: Request) {
     }
 
     logger.info(
-      { userId, planId, paymentId, orderId },
+      { userId, planId, paymentId, orderId, credits: plan.credits },
       "Processando concessão de créditos",
     );
 
     processedPayments.add(paymentId);
 
-    await purchasePlan(planId);
+    await addCredits(
+      userId,
+      plan.credits,
+      `Compra do plano ${plan.name} via PIX`,
+      planId,
+    );
+
+    revalidatePath("/painel");
+    revalidatePath("/uso");
+    revalidatePath("/planos");
 
     logger.info(
-      { userId, planId, paymentId, orderId },
+      { userId, planId, paymentId, orderId, creditsAdded: plan.credits },
       "Créditos concedidos com sucesso",
     );
 
