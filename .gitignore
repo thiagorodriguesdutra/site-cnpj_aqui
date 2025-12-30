@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Migrations
 checklist.md
+
+# Scripts
+/scripts

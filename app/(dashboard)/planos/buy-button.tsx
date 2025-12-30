@@ -39,7 +39,7 @@ export function BuyButton({
       ...(planType && { type: planType }),
     });
 
-    router.push(`/checkout/preview?${params.toString()}`);
+    router.push(`/checkout?${params.toString()}`);
   }
 
   const getButtonText = () => {

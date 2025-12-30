@@ -537,7 +537,7 @@ export function CartaoCNPJ({
                   Confirme a validade deste documento em:
                 </Text>
                 <Text style={styles.authLink}>
-                  cnpjaqui.com.br/validar/{documentId}
+                  www.cnpjaqui.com.br/validar/{documentId}
                 </Text>
               </View>
             </View>
