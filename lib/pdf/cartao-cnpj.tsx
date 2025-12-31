@@ -2,213 +2,219 @@ import {
   Document,
   Image,
   Page,
-  Path,
   StyleSheet,
-  Svg,
   Text,
   View,
 } from "@react-pdf/renderer";
 import type { CnpjData } from "../services/cnpj.service";
+import {
+  formatCEP,
+  formatCNPJComplete,
+  formatDateBR,
+  formatPhoneBR,
+  isMatriz,
+  isSituacaoAtiva,
+} from "../utils";
+import { BrasaoRepublica } from "./icons";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 12,
+    padding: 16,
     fontSize: 8,
     fontFamily: "Helvetica",
     backgroundColor: "#ffffff",
   },
   mainBorder: {
-    border: "1pt solid #1a1a1a",
-    padding: 8,
+    border: "1.5pt solid #1a1a1a",
+    padding: 10,
     backgroundColor: "#ffffff",
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 3,
-    paddingBottom: 2,
+    marginBottom: 6,
+    paddingBottom: 4,
+    borderBottom: "0.5pt solid #cccccc",
   },
   brasao: {
-    width: 42,
-    height: 42,
-    marginRight: 8,
+    width: 48,
+    height: 48,
+    marginRight: 12,
   },
   headerTextContainer: {
     flex: 1,
     alignItems: "center",
   },
   headerTitle: {
-    fontSize: 11.5,
+    fontSize: 12,
     fontWeight: "bold",
-    marginBottom: 3,
+    marginBottom: 4,
+    color: "#1a1a1a",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  headerSubtitle: {
+    fontSize: 10,
+    fontWeight: "bold",
     color: "#1a1a1a",
     letterSpacing: 0.3,
   },
-  headerSubtitle: {
-    fontSize: 9.5,
-    fontWeight: "bold",
-    color: "#1a1a1a",
-    letterSpacing: 0.2,
-  },
   spacer: {
-    width: 42,
-    marginLeft: 8,
+    width: 48,
+    marginLeft: 12,
   },
   firstRow: {
     flexDirection: "row",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   cnpjBox: {
     width: "24%",
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
-    backgroundColor: "#fafafa",
+    border: "1pt solid #333333",
+    padding: 6,
+    backgroundColor: "#f5f5f5",
   },
   documentTitleBox: {
     width: "52%",
-    border: "0.75pt solid #2a2a2a",
+    border: "1pt solid #333333",
     borderLeft: "none",
-    padding: 5,
+    padding: 6,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff",
   },
   dataAberturaBox: {
     width: "24%",
-    border: "0.75pt solid #2a2a2a",
+    border: "1pt solid #333333",
     borderLeft: "none",
-    padding: 5,
-    backgroundColor: "#fafafa",
+    padding: 6,
+    backgroundColor: "#f5f5f5",
   },
   label: {
-    fontSize: 6.5,
-    marginBottom: 2,
-    color: "#4a4a4a",
+    fontSize: 6,
+    marginBottom: 3,
+    color: "#555555",
     fontWeight: "bold",
-    letterSpacing: 0.1,
+    letterSpacing: 0.2,
+    textTransform: "uppercase",
   },
   value: {
-    fontSize: 8.5,
+    fontSize: 9,
     fontWeight: "bold",
     color: "#000000",
-    lineHeight: 1.2,
+    lineHeight: 1.3,
+  },
+  valueSmall: {
+    fontSize: 8,
+    fontWeight: "bold",
+    color: "#000000",
+    lineHeight: 1.3,
   },
   documentTitle: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "bold",
     textAlign: "center",
     color: "#1a1a1a",
-    letterSpacing: 0.2,
-    lineHeight: 1.3,
+    letterSpacing: 0.3,
+    lineHeight: 1.4,
+    textTransform: "uppercase",
   },
   fullWidthBox: {
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
-    marginBottom: 2,
+    border: "1pt solid #333333",
+    padding: 6,
+    marginBottom: 4,
     width: "100%",
   },
   twoColumnRow: {
     flexDirection: "row",
-    marginBottom: 2,
+    marginBottom: 4,
   },
   leftColumn: {
-    width: "88%",
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
+    width: "85%",
+    border: "1pt solid #333333",
+    padding: 6,
   },
   rightColumn: {
-    width: "12%",
-    border: "0.75pt solid #2a2a2a",
+    width: "15%",
+    border: "1pt solid #333333",
     borderLeft: "none",
-    padding: 5,
+    padding: 6,
   },
   threeColumnRow: {
     flexDirection: "row",
-    marginBottom: 2,
-  },
-  col50: {
-    width: "50%",
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
-  },
-  col14: {
-    width: "14%",
-    border: "0.75pt solid #2a2a2a",
-    borderLeft: "none",
-    padding: 5,
-  },
-  col36: {
-    width: "36%",
-    border: "0.75pt solid #2a2a2a",
-    borderLeft: "none",
-    padding: 5,
+    marginBottom: 4,
   },
   fourColumnRow: {
     flexDirection: "row",
-    marginBottom: 2,
+    marginBottom: 4,
   },
-  col18: {
-    width: "18%",
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
-  },
-  col30: {
-    width: "30%",
-    border: "0.75pt solid #2a2a2a",
-    borderLeft: "none",
-    padding: 5,
-  },
-  col38: {
-    width: "38%",
-    border: "0.75pt solid #2a2a2a",
-    borderLeft: "none",
-    padding: 5,
+  col50: {
+    width: "50%",
+    border: "1pt solid #333333",
+    padding: 6,
   },
   col50Right: {
     width: "50%",
-    border: "0.75pt solid #2a2a2a",
+    border: "1pt solid #333333",
     borderLeft: "none",
-    padding: 5,
+    padding: 6,
+  },
+  col14: {
+    width: "14%",
+    border: "1pt solid #333333",
+    borderLeft: "none",
+    padding: 6,
+  },
+  col36: {
+    width: "36%",
+    border: "1pt solid #333333",
+    borderLeft: "none",
+    padding: 6,
+  },
+  col18: {
+    width: "18%",
+    border: "1pt solid #333333",
+    padding: 6,
+  },
+  col30: {
+    width: "30%",
+    border: "1pt solid #333333",
+    borderLeft: "none",
+    padding: 6,
+  },
+  col38: {
+    width: "38%",
+    border: "1pt solid #333333",
+    borderLeft: "none",
+    padding: 6,
   },
   col75: {
     width: "75%",
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
+    border: "1pt solid #333333",
+    padding: 6,
   },
   col25: {
     width: "25%",
-    border: "0.75pt solid #2a2a2a",
+    border: "1pt solid #333333",
     borderLeft: "none",
-    padding: 5,
-  },
-  col31: {
-    width: "31%",
-    border: "0.75pt solid #2a2a2a",
-    padding: 5,
+    padding: 6,
   },
   activityItem: {
-    fontSize: 8.5,
+    fontSize: 8,
     fontWeight: "bold",
-    marginBottom: 1.5,
+    marginBottom: 2,
     color: "#000000",
-    lineHeight: 1.2,
-  },
-  footerContainer: {
-    marginTop: 3,
-    borderTop: "0.5pt solid #e0e0e0",
-    paddingTop: 3,
-    alignItems: "center",
+    lineHeight: 1.3,
   },
   approvalRow: {
-    marginBottom: 2,
+    marginBottom: 4,
     width: "100%",
     alignItems: "center",
   },
   approvalText: {
-    fontSize: 6.5,
-    color: "#1a1a1a",
-    lineHeight: 1.1,
+    fontSize: 7,
+    color: "#333333",
+    lineHeight: 1.2,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -217,40 +223,62 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   emissionRow: {
-    marginBottom: 2,
+    marginBottom: 4,
     alignItems: "center",
+  },
+  footerContainer: {
+    marginTop: 6,
+    borderTop: "0.5pt solid #cccccc",
+    paddingTop: 6,
+  },
+  footerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  emissionColumn: {
+    flex: 1,
+    justifyContent: "center",
   },
   footerText: {
-    fontSize: 6.5,
-    color: "#444444",
-    marginBottom: 0.5,
-    textAlign: "center",
-  },
-  qrCodeRow: {
-    flexDirection: "column",
-    alignItems: "center",
-    marginTop: 2,
-  },
-  qrCode: {
-    width: 38,
-    height: 38,
+    fontSize: 6,
+    color: "#333333",
     marginBottom: 1,
   },
-  authBox: {
+  qrCodeColumn: {
+    flexDirection: "row",
     alignItems: "center",
   },
+  qrCode: {
+    width: 40,
+    height: 40,
+    marginRight: 6,
+  },
+  authBox: {
+    justifyContent: "center",
+  },
   authText: {
-    fontSize: 5,
-    color: "#333333",
-    lineHeight: 1.1,
-    textAlign: "center",
+    fontSize: 5.5,
+    color: "#444444",
+    lineHeight: 1.2,
   },
   authLink: {
-    fontSize: 5,
-    color: "#0066cc",
+    fontSize: 5.5,
+    color: "#0056b3",
     fontWeight: "bold",
-    marginTop: 0.5,
-    textAlign: "center",
+    marginTop: 1,
+  },
+  situacaoAtiva: {
+    fontSize: 9,
+    fontWeight: "bold",
+    color: "#006400",
+    lineHeight: 1.3,
+  },
+  situacaoInativa: {
+    fontSize: 9,
+    fontWeight: "bold",
+    color: "#8B0000",
+    lineHeight: 1.3,
   },
 });
 
@@ -259,34 +287,7 @@ interface CartaoCNPJProps {
   emitidoEm?: Date;
   documentId: string;
   qrCodeDataUrl: string;
-}
-
-function formatCNPJ(cnpj: string): string {
-  const cleaned = cnpj.replace(/\D/g, "");
-  return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5, 8)}/${cleaned.slice(8, 12)}-${cleaned.slice(12)}`;
-}
-
-function formatDate(date: string): string {
-  if (!date) return "";
-  const cleaned = date.replace(/\D/g, "");
-  if (cleaned.length === 8) {
-    return `${cleaned.slice(6, 8)}/${cleaned.slice(4, 6)}/${cleaned.slice(0, 4)}`;
-  }
-  return date;
-}
-
-function formatCEP(cep: string): string {
-  if (!cep) return "";
-  const cleaned = cep.replace(/\D/g, "");
-  if (cleaned.length === 8) {
-    return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}-${cleaned.slice(5)}`;
-  }
-  return cep;
-}
-
-function isMatriz(cnpj: string): boolean {
-  const cleaned = cnpj.replace(/\D/g, "");
-  return cleaned.slice(8, 12) === "0001";
+  validationBaseUrl?: string;
 }
 
 export function CartaoCNPJ({
@@ -294,8 +295,12 @@ export function CartaoCNPJ({
   emitidoEm = new Date(),
   documentId,
   qrCodeDataUrl,
+  validationBaseUrl = "www.cnpjaqui.com.br",
 }: CartaoCNPJProps) {
-  const cnpjFormatado = formatCNPJ(data.cnpj);
+  const cnpjFormatado = formatCNPJComplete(data.cnpj);
+  const tipoEstabelecimento = isMatriz(data.cnpj) ? "MATRIZ" : "FILIAL";
+  const situacaoAtiva = isSituacaoAtiva(data.situacaoCadastral);
+
   const dataEmissao = emitidoEm.toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -307,26 +312,19 @@ export function CartaoCNPJ({
     second: "2-digit",
   });
 
+  const telefoneFormatado = formatPhoneBR(data.telefone);
+
   return (
-    <Document>
+    <Document
+      title={`Cartão CNPJ - ${data.razaoSocial}`}
+      author="Receita Federal do Brasil"
+      subject="Comprovante de Inscrição e de Situação Cadastral"
+      keywords="CNPJ, Receita Federal, Brasil"
+    >
       <Page size="A4" style={styles.page}>
         <View style={styles.mainBorder}>
           <View style={styles.headerContainer}>
-            <Svg viewBox="0 0 512 512" style={styles.brasao}>
-              <Path
-                fill="#009B3A"
-                d="M256 0c141.38 0 256 114.62 256 256S397.38 512 256 512 0 397.38 0 256 114.62 0 256 0z"
-              />
-              <Path fill="#FEDF00" d="M256 92 462 256 256 420 50 256z" />
-              <Path
-                fill="#002776"
-                d="M256 174c45.8 0 83 37.2 83 83s-37.2 83-83 83-83-37.2-83-83 37.2-83 83-83z"
-              />
-              <Path
-                fill="#fff"
-                d="M179 224c9-1 19-2 29-2 49 0 94 18 129 47-1 4-2 9-3 13-33-30-78-48-126-48-11 0-22 1-33 3 1-4 3-9 4-13z"
-              />
-            </Svg>
+            <BrasaoRepublica style={styles.brasao} />
             <View style={styles.headerTextContainer}>
               <Text style={styles.headerTitle}>
                 REPÚBLICA FEDERATIVA DO BRASIL
@@ -342,18 +340,18 @@ export function CartaoCNPJ({
             <View style={styles.cnpjBox}>
               <Text style={styles.label}>NÚMERO DE INSCRIÇÃO</Text>
               <Text style={styles.value}>{cnpjFormatado}</Text>
-              <Text style={styles.value}>
-                {isMatriz(data.cnpj) ? "MATRIZ" : "FILIAL"}
-              </Text>
+              <Text style={styles.valueSmall}>{tipoEstabelecimento}</Text>
             </View>
             <View style={styles.documentTitleBox}>
               <Text style={styles.documentTitle}>
-                COMPROVANTE DE INSCRIÇÃO E DE SITUAÇÃO CADASTRAL
+                COMPROVANTE DE INSCRIÇÃO{"\n"}E DE SITUAÇÃO CADASTRAL
               </Text>
             </View>
             <View style={styles.dataAberturaBox}>
               <Text style={styles.label}>DATA DE ABERTURA</Text>
-              <Text style={styles.value}>{formatDate(data.dataAbertura)}</Text>
+              <Text style={styles.value}>
+                {formatDateBR(data.dataAbertura)}
+              </Text>
             </View>
           </View>
 
@@ -367,11 +365,13 @@ export function CartaoCNPJ({
               <Text style={styles.label}>
                 TÍTULO DO ESTABELECIMENTO (NOME DE FANTASIA)
               </Text>
-              <Text style={styles.value}>{data.nomeFantasia || "***"}</Text>
+              <Text style={styles.value}>
+                {data.nomeFantasia || "********"}
+              </Text>
             </View>
             <View style={styles.rightColumn}>
               <Text style={styles.label}>PORTE</Text>
-              <Text style={styles.value}>{data.porte}</Text>
+              <Text style={styles.valueSmall}>{data.porte || "**"}</Text>
             </View>
           </View>
 
@@ -391,14 +391,22 @@ export function CartaoCNPJ({
                 <Text style={styles.label}>
                   CÓDIGO E DESCRIÇÃO DAS ATIVIDADES ECONÔMICAS SECUNDÁRIAS
                 </Text>
-                {data.atividadesSecundarias.map((atividade, index) => (
-                  <Text
-                    key={`${atividade.codigo}-${index}`}
-                    style={styles.activityItem}
-                  >
-                    {atividade.codigo} - {atividade.descricao}
+                {data.atividadesSecundarias
+                  .slice(0, 10)
+                  .map((atividade, index) => (
+                    <Text
+                      key={`atividade-${atividade.codigo}-${index}`}
+                      style={styles.activityItem}
+                    >
+                      {atividade.codigo} - {atividade.descricao}
+                    </Text>
+                  ))}
+                {data.atividadesSecundarias.length > 10 && (
+                  <Text style={styles.activityItem}>
+                    ... e mais {data.atividadesSecundarias.length - 10}{" "}
+                    atividade(s)
                   </Text>
-                ))}
+                )}
               </View>
             )}
 
@@ -416,11 +424,11 @@ export function CartaoCNPJ({
             </View>
             <View style={styles.col14}>
               <Text style={styles.label}>NÚMERO</Text>
-              <Text style={styles.value}>{data.numero}</Text>
+              <Text style={styles.value}>{data.numero || "S/N"}</Text>
             </View>
             <View style={styles.col36}>
               <Text style={styles.label}>COMPLEMENTO</Text>
-              <Text style={styles.value}>{data.complemento || "***"}</Text>
+              <Text style={styles.value}>{data.complemento || "********"}</Text>
             </View>
           </View>
 
@@ -446,28 +454,38 @@ export function CartaoCNPJ({
           <View style={styles.twoColumnRow}>
             <View style={styles.col50}>
               <Text style={styles.label}>ENDEREÇO ELETRÔNICO</Text>
-              <Text style={styles.value}>{data.email || "***"}</Text>
+              <Text style={styles.value}>
+                {data.email?.toLowerCase() || "********"}
+              </Text>
             </View>
             <View style={styles.col50Right}>
               <Text style={styles.label}>TELEFONE</Text>
-              <Text style={styles.value}>{data.telefone || "***"}</Text>
+              <Text style={styles.value}>
+                {telefoneFormatado || "********"}
+              </Text>
             </View>
           </View>
 
           <View style={styles.fullWidthBox}>
             <Text style={styles.label}>ENTE FEDERATIVO RESPONSÁVEL (EFR)</Text>
-            <Text style={styles.value}>{data.efr || "*****"}</Text>
+            <Text style={styles.value}>{data.efr || "********"}</Text>
           </View>
 
           <View style={styles.twoColumnRow}>
             <View style={styles.col75}>
               <Text style={styles.label}>SITUAÇÃO CADASTRAL</Text>
-              <Text style={styles.value}>{data.situacaoCadastral}</Text>
+              <Text
+                style={
+                  situacaoAtiva ? styles.situacaoAtiva : styles.situacaoInativa
+                }
+              >
+                {data.situacaoCadastral}
+              </Text>
             </View>
             <View style={styles.col25}>
               <Text style={styles.label}>DATA DA SITUAÇÃO CADASTRAL</Text>
               <Text style={styles.value}>
-                {formatDate(data.dataSituacaoCadastral)}
+                {formatDateBR(data.dataSituacaoCadastral)}
               </Text>
             </View>
           </View>
@@ -475,7 +493,7 @@ export function CartaoCNPJ({
           <View style={styles.fullWidthBox}>
             <Text style={styles.label}>MOTIVO DE SITUAÇÃO CADASTRAL</Text>
             <Text style={styles.value}>
-              {data.motivoSituacaoCadastral || "***"}
+              {data.motivoSituacaoCadastral || "********"}
             </Text>
           </View>
 
@@ -490,36 +508,16 @@ export function CartaoCNPJ({
               <Text style={styles.label}>DATA DA SITUAÇÃO ESPECIAL</Text>
               <Text style={styles.value}>
                 {data.dataSituacaoEspecial
-                  ? formatDate(data.dataSituacaoEspecial)
+                  ? formatDateBR(data.dataSituacaoEspecial)
                   : "********"}
               </Text>
             </View>
           </View>
-
-          {data.qsa && data.qsa.length > 0 && (
-            <View style={styles.fullWidthBox}>
-              <Text style={styles.label}>
-                QUADRO DE SÓCIOS E ADMINISTRADORES (QSA)
-              </Text>
-              {data.qsa.map((socio) => (
-                <Text key={socio.nome} style={styles.activityItem}>
-                  {socio.nome} - {socio.qualificacao}
-                </Text>
-              ))}
-            </View>
-          )}
         </View>
 
         <View style={styles.footerContainer}>
-          <View style={styles.approvalRow}>
-            <Text style={styles.approvalText}>
-              Aprovado pela Instrução Normativa RFB nº 2.119, de 06 de dezembro
-              de 2022.
-            </Text>
-          </View>
-
-          <View style={styles.bottomRow}>
-            <View style={styles.emissionRow}>
+          <View style={styles.footerRow}>
+            <View style={styles.emissionColumn}>
               <Text style={styles.footerText}>
                 Emitido no dia {dataEmissao} às {horaEmissao} (data e hora de
                 Brasília).
@@ -527,7 +525,7 @@ export function CartaoCNPJ({
               <Text style={styles.footerText}>Página: 1/1</Text>
             </View>
 
-            <View style={styles.qrCodeRow}>
+            <View style={styles.qrCodeColumn}>
               <Image src={qrCodeDataUrl} style={styles.qrCode} />
               <View style={styles.authBox}>
                 <Text style={styles.authText}>
@@ -537,7 +535,7 @@ export function CartaoCNPJ({
                   Confirme a validade deste documento em:
                 </Text>
                 <Text style={styles.authLink}>
-                  www.cnpjaqui.com.br/validar/{documentId}
+                  {validationBaseUrl}/validar/{documentId}
                 </Text>
               </View>
             </View>
@@ -547,3 +545,5 @@ export function CartaoCNPJ({
     </Document>
   );
 }
+
+export default CartaoCNPJ;
