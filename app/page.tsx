@@ -5,6 +5,7 @@ import { HeroSearchInput } from "@/components/hero-search-input";
 import { Icons } from "@/components/icons";
 import { PublicFooter } from "@/components/public/footer";
 import { PublicHeader } from "@/components/public/header";
+import { PublicPricingSection } from "@/components/public/pricing-section";
 import { getCurrentUser } from "@/lib/auth";
 import { publicEnv } from "@/lib/env.public";
 
@@ -73,7 +74,6 @@ export const metadata: Metadata = {
 export default async function Home() {
   const user = await getCurrentUser();
 
-  // Redireciona usuários logados para o painel
   if (user) {
     redirect("/painel");
   }
@@ -340,139 +340,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <section id="planos" className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center space-y-3 mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  Escolha seu pacote
-                </h2>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-                  <div>
-                    <h3 className="font-semibold text-lg">Gratuito</h3>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold">Grátis</div>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>3 consultas para testar</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Sem cartão de crédito</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Uso imediato</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Histórico de consultas</span>
-                    </li>
-                  </ul>
-                  <a
-                    href="/login"
-                    className="w-full h-10 border border-border rounded-md hover:bg-accent transition-colors font-medium flex items-center justify-center"
-                  >
-                    Começar grátis
-                  </a>
-                </div>
-
-                <div className="bg-card border-2 border-primary rounded-lg p-6 space-y-4 relative">
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
-                    Mais popular
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Pacote 20</h3>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold">R$ 4,90</div>
-                    <div className="text-sm text-muted-foreground">
-                      pagamento único
-                    </div>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>20 consultas</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Pagamento único</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Créditos sem expiração</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Histórico completo</span>
-                    </li>
-                  </ul>
-                  <a
-                    href="/login?from=/planos"
-                    className="w-full h-10 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors font-medium flex items-center justify-center"
-                  >
-                    Comprar pacote
-                  </a>
-                </div>
-
-                <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-                  <div>
-                    <h3 className="font-semibold text-lg">Pacote 100</h3>
-                  </div>
-                  <div>
-                    <div className="text-3xl font-bold">R$ 14,90</div>
-                    <div className="text-sm text-muted-foreground">
-                      pagamento único
-                    </div>
-                  </div>
-                  <ul className="space-y-2 text-sm">
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>100 consultas</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Pagamento único</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Créditos sem expiração</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Icons.check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span>Histórico completo</span>
-                    </li>
-                  </ul>
-                  <a
-                    href="/login?from=/planos"
-                    className="w-full h-10 border border-border rounded-md hover:bg-accent transition-colors font-medium flex items-center justify-center"
-                  >
-                    Comprar pacote
-                  </a>
-                </div>
-              </div>
-
-              <div className="mt-8 bg-card border border-border rounded-lg p-6">
-                <div className="text-center space-y-2">
-                  <p className="text-sm font-medium text-foreground">
-                    Pagamento via PIX
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Após a confirmação do pagamento, os créditos são liberados
-                    automaticamente para uso imediato.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <PublicPricingSection />
 
         <section id="faq" className="py-16">
           <div className="container mx-auto px-4">
@@ -513,8 +381,9 @@ export default async function Home() {
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Não. O modelo é por créditos. Você paga apenas pelas
-                    consultas que fizer, sem mensalidade.
+                    Não obrigatoriamente. Você pode usar o CNPJ Aqui comprando
+                    créditos avulsos. Se preferir, também existem planos mensal
+                    e anual, que oferecem um custo menor por consulta.
                   </p>
                 </details>
 
