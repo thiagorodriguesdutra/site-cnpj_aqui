@@ -3,7 +3,7 @@
 import { auth, signOut } from "@/auth";
 import { createLogger } from "@/lib/logger";
 
-const logger = createLogger("auth-logout");
+const logger = createLogger("action-auth-logout");
 
 export async function logoutAction() {
   const session = await auth();

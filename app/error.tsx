@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { createClientLogger } from "@/lib/logger/client";
 
-const logger = createClientLogger("error-boundary");
+const logger = createClientLogger("error-root");
 
 export default function ErrorBoundary({
   error,

@@ -20,7 +20,7 @@ import {
 } from "@/lib/services/credits.service";
 import { maskCNPJ } from "@/lib/utils";
 
-const logger = createLogger("consultar-cnpj-action");
+const logger = createLogger("action-consultar-cnpj");
 
 export async function queryCNPJAction(input: { cnpj: string }) {
   try {

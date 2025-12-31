@@ -14,7 +14,7 @@ import {
 } from "@/lib/services/credits.service";
 import { maskCNPJ } from "@/lib/utils";
 
-const logger = createLogger("pdf-route");
+const logger = createLogger("api-pdf-cartao-cnpj");
 
 export async function GET(request: Request) {
   try {

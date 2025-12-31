@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { creditTransactions } from "@/lib/db/schema";
 import { createLogger } from "@/lib/logger";
 
-const logger = createLogger("check-payment-status");
+const logger = createLogger("api-check-payment-status");
 
 export async function GET(request: Request) {
   try {

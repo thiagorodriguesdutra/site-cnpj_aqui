@@ -7,7 +7,7 @@ import { createLogger } from "@/lib/logger";
 import { MercadoPagoPaymentAdapter } from "@/lib/payment/adapters/mercadopago.adapter";
 import type { PaymentMethod } from "@/lib/payment/ports/payment.port";
 
-const logger = createLogger("create-order-api");
+const logger = createLogger("api-create-order");
 
 export async function POST(request: Request) {
   try {

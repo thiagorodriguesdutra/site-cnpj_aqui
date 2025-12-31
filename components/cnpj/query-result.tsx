@@ -8,7 +8,7 @@ import { createClientLogger } from "@/lib/logger/client";
 import type { CnpjData } from "@/lib/services/cnpj.service";
 import { maskCNPJ } from "@/lib/utils";
 
-const logger = createClientLogger("resultado-consulta");
+const logger = createClientLogger("query-result");
 
 interface QueryResultProps {
   data: CnpjData;

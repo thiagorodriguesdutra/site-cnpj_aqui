@@ -1,6 +1,20 @@
 "use client";
 
+import { useEffect } from "react";
+import { createClientLogger } from "@/lib/logger/client";
+
+const logger = createClientLogger("error-global");
+
 export default function GlobalError({ error }: { error: Error }) {
+  useEffect(() => {
+    logger.error(
+      {
+        error: error.message,
+        stack: error.stack,
+      },
+      "Erro capturado pelo Global Error Boundary",
+    );
+  }, [error]);
   return (
     <html lang="pt-BR">
       <head>

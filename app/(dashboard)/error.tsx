@@ -6,7 +6,7 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { createClientLogger } from "@/lib/logger/client";
 
-const logger = createClientLogger("dashboard-error-boundary");
+const logger = createClientLogger("error-dashboard");
 
 export default function DashboardError({
   error,

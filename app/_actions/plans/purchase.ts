@@ -9,7 +9,7 @@ import { BusinessError } from "@/lib/errors/business-error";
 import { createLogger } from "@/lib/logger";
 import { addCredits } from "@/lib/services/credits.service";
 
-const logger = createLogger("purchase-plan");
+const logger = createLogger("action-purchase-plan");
 
 export async function purchasePlan(planId: string) {
   const user = await getCurrentUser();

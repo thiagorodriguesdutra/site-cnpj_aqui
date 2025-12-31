@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Icons } from "@/components/icons";
 import { events } from "@/lib/analytics/umami";
+import { createClientLogger } from "@/lib/logger/client";
+
+const logger = createClientLogger("checkout-form");
 
 interface CheckoutFormProps {
   planId: string;
@@ -59,7 +62,10 @@ export function CheckoutForm({
           }, 2000);
         }
       } catch (error) {
-        console.error("Erro ao verificar status:", error);
+        logger.error(
+          { error, planId },
+          "Erro ao verificar status do pagamento",
+        );
       }
     }
 
