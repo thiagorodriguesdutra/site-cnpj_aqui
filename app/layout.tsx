@@ -40,6 +40,9 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  alternates: {
+    canonical: "/", 
+  },
 };
 
 export default function RootLayout({
