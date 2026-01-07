@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Source_Code_Pro } from "next/font/google";
+import { UmamiScript } from "@/components/analytics/umami-script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { publicEnv } from "@/lib/env.public";
 import "./globals.css";
@@ -63,6 +64,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <UmamiScript />
       </body>
     </html>
   );
