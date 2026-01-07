@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: "/", 
+    canonical: "/",
   },
 };
 

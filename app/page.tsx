@@ -290,7 +290,7 @@ export default async function Home() {
                     <div className="flex items-start gap-3">
                       <Icons.checkCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                       <p className="font-medium">
-                        Dados públicos oficiais sempre atualizados
+                        Dados oficiais sempre atualizados
                       </p>
                     </div>
                     <div className="flex items-start gap-3">
