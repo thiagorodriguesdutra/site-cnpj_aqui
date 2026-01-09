@@ -3,7 +3,8 @@ import { auth } from "./auth";
 
 const publicRoutes = ["/", "/login", "/termos", "/auth/callback"];
 const publicRoutePrefixes = ["/validar/", "/blog"];
-const authRoutes = ["/login"];
+// Rotas que redirecionam para /painel se autenticado
+const authRoutes = ["/", "/login"];
 
 function generateNonce(): string {
   const array = new Uint8Array(16);

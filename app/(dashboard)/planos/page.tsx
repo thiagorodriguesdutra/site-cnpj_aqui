@@ -15,6 +15,9 @@ import { plans } from "@/lib/db/schema";
 import { BuyButton } from "./buy-button";
 import { PlansTracker } from "./plans-tracker";
 
+// ISR: revalida planos a cada 1 hora (dados estáveis)
+export const revalidate = 3600;
+
 export const metadata = {
   title: "Planos e Pacotes | CNPJ Aqui",
   description: "Escolha o plano ideal para suas necessidades",

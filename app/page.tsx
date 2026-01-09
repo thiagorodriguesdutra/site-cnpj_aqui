@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { PageViewTracker } from "@/components/analytics/page-view-tracker";
 import { HeroSearchInput } from "@/components/hero-search-input";
 import { Icons } from "@/components/icons";
 import { PublicFooter } from "@/components/public/footer";
 import { PublicHeader } from "@/components/public/header";
 import { PublicPricingSection } from "@/components/public/pricing-section";
-import { getCurrentUser } from "@/lib/auth";
 import { publicEnv } from "@/lib/env.public";
 
 const appUrl = publicEnv.NEXT_PUBLIC_APP_URL || "https://www.cnpjfacil.com.br";
+
+// Página estática - redirect de usuários autenticados é feito no middleware
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "CNPJ Aqui - Emita o Cartão CNPJ Oficial em PDF em 2 segundos",
@@ -71,13 +72,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Home() {
-  const user = await getCurrentUser();
-
-  if (user) {
-    redirect("/painel");
-  }
-
+export default function Home() {
   return (
     <div className="min-h-screen">
       <PageViewTracker />

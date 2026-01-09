@@ -4,6 +4,8 @@ import { GoogleSignInButton } from "@/components/auth/google-signin-button";
 import { Icons } from "@/components/icons";
 import { LoginTracker } from "./login-tracker";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Entrar",
   description:

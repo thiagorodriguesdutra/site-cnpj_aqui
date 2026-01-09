@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { articles } from "@/lib/blog";
 
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   title: "Blog | CNPJ Aqui",
   description:
