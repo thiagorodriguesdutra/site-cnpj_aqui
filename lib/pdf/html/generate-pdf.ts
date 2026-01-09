@@ -1,21 +1,37 @@
-import { type Browser, chromium } from "playwright";
+import chromiumBinary from "@sparticuz/chromium";
+import { type Browser, chromium } from "playwright-core";
 import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("pdf-generator");
 
 let browserInstance: Browser | null = null;
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 async function getBrowser(): Promise<Browser> {
   if (!browserInstance || !browserInstance.isConnected()) {
-    browserInstance = await chromium.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
-    });
+    if (isDevelopment) {
+      // Em desenvolvimento, usa instalação local do Playwright
+      // Requer: npx playwright install chromium
+      browserInstance = await chromium.launch({
+        headless: true,
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+        ],
+      });
+    } else {
+      // Em produção (serverless), usa @sparticuz/chromium
+      const executablePath = await chromiumBinary.executablePath();
+
+      browserInstance = await chromium.launch({
+        executablePath,
+        headless: true,
+        args: chromiumBinary.args,
+      });
+    }
   }
   return browserInstance;
 }

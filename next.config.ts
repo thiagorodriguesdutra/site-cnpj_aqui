@@ -3,7 +3,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  serverExternalPackages: ["pino", "pino-pretty"],
+  serverExternalPackages: [
+    "pino",
+    "pino-pretty",
+    "@sparticuz/chromium",
+    "playwright-core",
+  ],
   turbopack: {},
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 };
