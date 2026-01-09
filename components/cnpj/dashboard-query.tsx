@@ -1,11 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Icons } from "@/components/icons";
 import { events } from "@/lib/analytics/umami";
 import type { CnpjData } from "@/lib/services/cnpj.service";
 import { QueryForm } from "./query-form";
-import { QueryResult } from "./query-result";
+
+const QueryResult = dynamic(
+  () => import("./query-result").then((mod) => mod.QueryResult),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <Icons.spinner className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    ),
+  },
+);
 
 interface DashboardQueryProps {
   availableCredits: number;

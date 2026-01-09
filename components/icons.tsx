@@ -27,6 +27,7 @@ import {
   Lock,
   LogOut,
   Menu,
+  Moon,
   MoreHorizontal,
   Plus,
   QrCode,
@@ -34,6 +35,7 @@ import {
   Search,
   Settings,
   Shield,
+  Sun,
   TrendingDown,
   User,
   Users,
@@ -87,6 +89,8 @@ export const Icons = {
   externalLink: ExternalLink,
   alertCircle: AlertCircle,
   checkCircle: CheckCircle,
+  sun: Sun,
+  moon: Moon,
 
   google: (props: IconProps) => (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>
