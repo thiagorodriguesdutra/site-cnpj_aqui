@@ -4,16 +4,16 @@ import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("pdf-generator");
 
-let browserInstance: Browser | null = null;
-
 const isDevelopment = process.env.NODE_ENV === "development";
 
-async function getBrowser(): Promise<Browser> {
-  if (!browserInstance || !browserInstance.isConnected()) {
-    if (isDevelopment) {
-      // Em desenvolvimento, usa instalação local do Playwright
-      // Requer: npx playwright install chromium
-      browserInstance = await chromium.launch({
+// Em desenvolvimento, reutilizamos o browser para melhor performance
+let devBrowserInstance: Browser | null = null;
+
+async function launchBrowser(): Promise<Browser> {
+  if (isDevelopment) {
+    // Em desenvolvimento, reutiliza o browser
+    if (!devBrowserInstance || !devBrowserInstance.isConnected()) {
+      devBrowserInstance = await chromium.launch({
         headless: true,
         args: [
           "--no-sandbox",
@@ -22,25 +22,19 @@ async function getBrowser(): Promise<Browser> {
           "--disable-gpu",
         ],
       });
-    } else {
-      // Em produção (serverless), usa @sparticuz/chromium
-      const executablePath = await chromiumBinary.executablePath();
-
-      browserInstance = await chromium.launch({
-        executablePath,
-        headless: true,
-        args: chromiumBinary.args,
-      });
     }
+    return devBrowserInstance;
   }
-  return browserInstance;
-}
 
-export async function closeBrowser(): Promise<void> {
-  if (browserInstance?.isConnected()) {
-    await browserInstance.close();
-    browserInstance = null;
-  }
+  // Em produção (serverless), cada requisição cria seu próprio browser
+  // Isso evita erros de "browser has been closed" entre invocações
+  const executablePath = await chromiumBinary.executablePath();
+
+  return await chromium.launch({
+    executablePath,
+    headless: true,
+    args: chromiumBinary.args,
+  });
 }
 
 interface GeneratePDFOptions {
@@ -54,7 +48,7 @@ export async function generatePDFFromURL(
 ): Promise<Buffer> {
   const { url, waitForSelector = ".pdf-page", timeout = 30000 } = options;
 
-  const browser = await getBrowser();
+  const browser = await launchBrowser();
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -84,11 +78,15 @@ export async function generatePDFFromURL(
     throw new Error(`Falha ao gerar PDF: ${errorMessage}`);
   } finally {
     await context.close();
+    // Em produção, fecha o browser após cada uso
+    if (!isDevelopment) {
+      await browser.close();
+    }
   }
 }
 
 export async function generatePDFFromHTML(html: string): Promise<Buffer> {
-  const browser = await getBrowser();
+  const browser = await launchBrowser();
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -115,19 +113,32 @@ export async function generatePDFFromHTML(html: string): Promise<Buffer> {
     throw new Error(`Falha ao gerar PDF: ${errorMessage}`);
   } finally {
     await context.close();
+    // Em produção, fecha o browser após cada uso
+    if (!isDevelopment) {
+      await browser.close();
+    }
   }
 }
 
-process.on("beforeExit", async () => {
-  await closeBrowser();
-});
+// Cleanup para desenvolvimento
+if (isDevelopment) {
+  process.on("beforeExit", async () => {
+    if (devBrowserInstance?.isConnected()) {
+      await devBrowserInstance.close();
+    }
+  });
 
-process.on("SIGINT", async () => {
-  await closeBrowser();
-  process.exit(0);
-});
+  process.on("SIGINT", async () => {
+    if (devBrowserInstance?.isConnected()) {
+      await devBrowserInstance.close();
+    }
+    process.exit(0);
+  });
 
-process.on("SIGTERM", async () => {
-  await closeBrowser();
-  process.exit(0);
-});
+  process.on("SIGTERM", async () => {
+    if (devBrowserInstance?.isConnected()) {
+      await devBrowserInstance.close();
+    }
+    process.exit(0);
+  });
+}
