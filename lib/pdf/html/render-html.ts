@@ -254,6 +254,49 @@ body {
   margin-top: 1px;
 }
 
+.qsa-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.qsa-item {
+  width: calc(50% - 2px);
+  display: flex;
+  flex-direction: column;
+  padding: 3px 6px;
+  background-color: #fafafa;
+  border: 0.5pt solid #e0e0e0;
+  border-radius: 2px;
+}
+
+.qsa-nome {
+  font-size: 7pt;
+  font-weight: bold;
+  color: #000000;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qsa-qualificacao {
+  font-size: 6pt;
+  color: #555555;
+  line-height: 1.2;
+}
+
+.qsa-more {
+  width: 100%;
+  font-size: 6.5pt;
+  font-weight: bold;
+  color: #666666;
+  text-align: center;
+  padding: 2px 0;
+  margin-top: 2px;
+}
+
 @media print {
   body {
     -webkit-print-color-adjust: exact;
@@ -344,6 +387,34 @@ export function renderCartaoCNPJToHTML(
             ? `<span class="activity-item">... e mais ${data.atividadesSecundarias.length - 10} atividade(s)</span>`
             : ""
         }
+      </div>
+    `
+      : "";
+
+  // Limita a 8 sócios para não extrapolar 1 página (2 colunas x 4 linhas)
+  const maxQsaExibidos = 8;
+  const qsaHtml =
+    data.qsa && data.qsa.length > 0
+      ? `
+      <div class="box full-width">
+        <span class="label">QUADRO DE SOCIOS E ADMINISTRADORES (QSA)</span>
+        <div class="qsa-grid">
+          ${data.qsa
+            .slice(0, maxQsaExibidos)
+            .map(
+              (socio) =>
+                `<div class="qsa-item">
+                  <span class="qsa-nome">${escapeHtml(socio.nome)}</span>
+                  <span class="qsa-qualificacao">${escapeHtml(socio.qualificacao)}</span>
+                </div>`,
+            )
+            .join("")}
+          ${
+            data.qsa.length > maxQsaExibidos
+              ? `<span class="qsa-more">... e mais ${data.qsa.length - maxQsaExibidos} socio(s)</span>`
+              : ""
+          }
+        </div>
       </div>
     `
       : "";
@@ -501,6 +572,9 @@ export function renderCartaoCNPJToHTML(
           <span class="value">${data.dataSituacaoEspecial ? escapeHtml(formatDateBR(data.dataSituacaoEspecial)) : "********"}</span>
         </div>
       </div>
+
+      <!-- QSA - Quadro de Socios e Administradores -->
+      ${qsaHtml}
     </div>
 
     <!-- Footer -->
