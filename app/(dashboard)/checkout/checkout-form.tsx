@@ -187,10 +187,12 @@ export function CheckoutForm({
 
         {pixData.qrCodeBase64 && (
           <div className="flex justify-center">
-            {/* biome-ignore lint/performance/noImgElement: base64 inline image for QR code */}
+            {/* biome-ignore lint/performance/noImgElement: base64 inline image for QR code - cannot use next/image */}
             <img
               src={`data:image/png;base64,${pixData.qrCodeBase64}`}
               alt="QR Code PIX"
+              width={256}
+              height={256}
               className="w-64 h-64 border-2 border-border rounded-lg"
             />
           </div>
