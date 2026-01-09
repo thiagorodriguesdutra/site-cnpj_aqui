@@ -8,10 +8,10 @@ import { UserNav } from "./user-nav";
 const logger = createLogger("header");
 
 export async function Header() {
-  let isAdmin = false;
+  let _isAdmin = false;
 
   try {
-    isAdmin = await isUserAdmin();
+    _isAdmin = await isUserAdmin();
   } catch (error) {
     const isDynamicServerError =
       error instanceof Error &&
@@ -58,7 +58,7 @@ export async function Header() {
               <Icons.settings className="w-4 h-4" />
               Conta
             </Link>
-            {isAdmin && (
+            {/* {isAdmin && (
               <Link
                 href="/admin"
                 className="flex items-center gap-2 text-sm text-destructive hover:text-destructive/80 transition-colors font-medium"
@@ -66,7 +66,7 @@ export async function Header() {
                 <Icons.shield className="w-4 h-4" />
                 Admin
               </Link>
-            )}
+            )} */}
           </nav>
         </div>
 

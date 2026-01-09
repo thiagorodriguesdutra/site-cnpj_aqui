@@ -11,7 +11,7 @@ export function Footer() {
             Termos de Uso
           </a>
           <a
-            href="/privacidade"
+            href="/termos#privacidade"
             className="hover:text-foreground transition-colors"
           >
             Privacidade
