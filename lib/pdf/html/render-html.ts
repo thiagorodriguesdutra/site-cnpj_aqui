@@ -316,11 +316,13 @@ export function renderCartaoCNPJToHTML(
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    timeZone: "America/Sao_Paulo",
   });
   const horaEmissao = emitidoEm.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    timeZone: "America/Sao_Paulo",
   });
 
   const telefoneFormatado = formatPhoneBR(data.telefone);

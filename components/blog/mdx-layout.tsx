@@ -31,6 +31,7 @@ export function MdxLayout({ children, metadata }: MdxLayoutProps) {
             day: "numeric",
             month: "long",
             year: "numeric",
+            timeZone: "America/Sao_Paulo",
           })}
         </time>
       </header>

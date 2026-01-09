@@ -17,8 +17,12 @@ export const cnpjQueries = pgTable(
     }),
     cnpj: text("cnpj").notNull(),
     responseData: jsonb("response_data"),
-    queriedAt: timestamp("queried_at", { mode: "date" }).defaultNow().notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    queriedAt: timestamp("queried_at", { mode: "date", withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => ({
     userIdQueriedAtIdx: index("cnpj_queries_user_id_queried_at_idx").on(

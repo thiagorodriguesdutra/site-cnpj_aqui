@@ -33,8 +33,10 @@ export const userCredits = pgTable("user_credits", {
     .references(() => users.id, { onDelete: "cascade" }),
   availableCredits: integer("available_credits").default(3).notNull(),
   totalUsed: integer("total_used").default(0).notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" })
+  createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
@@ -48,8 +50,10 @@ export const plans = pgTable("plans", {
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
   credits: integer("credits").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
-  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" })
+  createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date", withTimezone: true })
     .defaultNow()
     .notNull()
     .$onUpdate(() => new Date()),
@@ -68,7 +72,9 @@ export const creditTransactions = pgTable(
     planId: uuid("plan_id").references(() => plans.id, {
       onDelete: "set null",
     }),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => ({
     userIdCreatedAtIdx: index("credit_transactions_user_id_created_at_idx").on(

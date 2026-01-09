@@ -19,8 +19,12 @@ export const issuedDocuments = pgTable(
       .notNull(),
     cnpj: text("cnpj").notNull(),
     documentData: jsonb("document_data").notNull(),
-    issuedAt: timestamp("issued_at", { mode: "date" }).defaultNow().notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    issuedAt: timestamp("issued_at", { mode: "date", withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => ({
     idIdx: index("issued_documents_id_idx").on(table.id),
@@ -39,12 +43,14 @@ export const documentValidations = pgTable(
         onDelete: "cascade",
       })
       .notNull(),
-    validatedAt: timestamp("validated_at", { mode: "date" })
+    validatedAt: timestamp("validated_at", { mode: "date", withTimezone: true })
       .defaultNow()
       .notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
-    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    createdAt: timestamp("created_at", { mode: "date", withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => ({
     documentIdIdx: index("document_validations_document_id_idx").on(

@@ -42,6 +42,7 @@ export default function BlogPage() {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
+                  timeZone: "America/Sao_Paulo",
                 })}
               </time>
             </Link>

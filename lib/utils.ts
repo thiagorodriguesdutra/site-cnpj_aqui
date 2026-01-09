@@ -53,7 +53,9 @@ export function formatDateBR(date: string): string {
   }
   const parsed = new Date(date);
   if (!Number.isNaN(parsed.getTime())) {
-    return parsed.toLocaleDateString("pt-BR");
+    return parsed.toLocaleDateString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
   }
   return date;
 }

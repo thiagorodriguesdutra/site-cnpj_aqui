@@ -8,6 +8,13 @@
       "when": 1766963015571,
       "tag": "0000_early_gladiator",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1767920787284,
+      "tag": "0001_add-timezone-to-timestamps",
+      "breakpoints": true
     }
   ]
 }
