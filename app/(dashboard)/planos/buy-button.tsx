@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Icons } from "@/components/icons";
 import { events } from "@/lib/analytics/umami";
 
@@ -25,6 +25,17 @@ export function BuyButton({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  // Memoiza texto do botão para evitar recálculo em re-renders
+  const buttonText = useMemo(() => {
+    if (credits) {
+      if (isSubscription) {
+        return "Assinar agora";
+      }
+      return `Adicionar ${credits} créditos`;
+    }
+    return planName ? `Comprar ${planName}` : "Comprar agora";
+  }, [credits, isSubscription, planName]);
+
   function handlePurchase() {
     setIsLoading(true);
 
@@ -42,19 +53,6 @@ export function BuyButton({
     router.push(`/checkout?${params.toString()}`);
   }
 
-  const getButtonText = () => {
-    if (isLoading) return "Processando...";
-
-    if (credits) {
-      if (isSubscription) {
-        return "Assinar agora";
-      }
-      return `Adicionar ${credits} créditos`;
-    }
-
-    return planName ? `Comprar ${planName}` : "Comprar agora";
-  };
-
   return (
     <button
       type="button"
@@ -70,7 +68,7 @@ export function BuyButton({
       ) : (
         <>
           <Icons.coins className="h-5 w-5" />
-          {getButtonText()}
+          {buttonText}
         </>
       )}
     </button>
