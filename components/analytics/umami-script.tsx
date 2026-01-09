@@ -14,7 +14,7 @@ export function UmamiScript({ nonce }: { nonce?: string }) {
     <Script
       src={`${umamiUrl}/script.js`}
       data-website-id={websiteId}
-      strategy="afterInteractive"
+      strategy="lazyOnload"
       nonce={nonce}
     />
   );
