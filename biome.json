@@ -27,6 +27,21 @@
       "react": "recommended"
     }
   },
+  "overrides": [
+    {
+      "includes": ["app/pdf/**/*.tsx", "lib/pdf/html/**/*.tsx"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          },
+          "performance": {
+            "noImgElement": "off"
+          }
+        }
+      }
+    }
+  ],
   "assist": {
     "actions": {
       "source": {

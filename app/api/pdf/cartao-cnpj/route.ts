@@ -1,11 +1,11 @@
-import { renderToBuffer } from "@react-pdf/renderer";
 import { and, eq, gte } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { db, issuedDocuments } from "@/lib/db";
 import { createLogger } from "@/lib/logger";
-import { CartaoCNPJ } from "@/lib/pdf/cartao-cnpj";
 import { generateQRCodeDataUrl } from "@/lib/pdf/generate-qr-code";
+import { generatePDFFromHTML } from "@/lib/pdf/html/generate-pdf";
+import { renderCartaoCNPJToHTML } from "@/lib/pdf/html/render-html";
 import { rateLimit } from "@/lib/rate-limit";
 import type { CnpjData } from "@/lib/services/cnpj.service";
 import {
@@ -22,9 +22,9 @@ export async function GET(request: Request) {
     const documentId = searchParams.get("documentId");
 
     if (!documentId) {
-      logger.warn({ url: request.url }, "Requisição GET sem documentId");
+      logger.warn({ url: request.url }, "Requisicao GET sem documentId");
       return NextResponse.json(
-        { error: "documentId é obrigatório" },
+        { error: "documentId e obrigatorio" },
         { status: 400 },
       );
     }
@@ -36,9 +36,9 @@ export async function GET(request: Request) {
       .limit(1);
 
     if (!document) {
-      logger.warn({ documentId }, "Documento não encontrado");
+      logger.warn({ documentId }, "Documento nao encontrado");
       return NextResponse.json(
-        { error: "Documento não encontrado" },
+        { error: "Documento nao encontrado" },
         { status: 404 },
       );
     }
@@ -47,19 +47,19 @@ export async function GET(request: Request) {
 
     logger.info(
       { documentId, cnpj: maskCNPJ(cnpjData.cnpj) },
-      "Download público de PDF via validação",
+      "Download publico de PDF via validacao",
     );
 
     const qrCodeDataUrl = await generateQRCodeDataUrl(documentId);
 
-    const pdfBuffer = await renderToBuffer(
-      CartaoCNPJ({
-        data: cnpjData,
-        emitidoEm: document.issuedAt,
-        documentId: document.id,
-        qrCodeDataUrl,
-      }),
-    );
+    const html = renderCartaoCNPJToHTML({
+      data: cnpjData,
+      emitidoEm: document.issuedAt,
+      documentId: document.id,
+      qrCodeDataUrl,
+    });
+
+    const pdfBuffer = await generatePDFFromHTML(html);
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
@@ -68,10 +68,8 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    logger.error(
-      { error, operation: "generatePublicPDF" },
-      "Erro ao gerar PDF público",
-    );
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error({ errorMessage }, "Erro ao gerar PDF publico");
     return NextResponse.json({ error: "Erro ao gerar PDF" }, { status: 500 });
   }
 }
@@ -83,10 +81,10 @@ export async function POST(request: Request) {
     if (!user) {
       logger.warn(
         { url: request.url },
-        "Tentativa de gerar PDF sem autenticação",
+        "Tentativa de gerar PDF sem autenticacao",
       );
       return NextResponse.json(
-        { error: "Autenticação necessária" },
+        { error: "Autenticacao necessaria" },
         { status: 401 },
       );
     }
@@ -104,11 +102,11 @@ export async function POST(request: Request) {
       );
       logger.warn(
         { userId: user.id, ip, operation: "generatePDF" },
-        "Rate limit excedido para geração de PDF",
+        "Rate limit excedido para geracao de PDF",
       );
       return NextResponse.json(
         {
-          error: `Muitas requisições. Aguarde ${resetInSeconds} segundos.`,
+          error: `Muitas requisicoes. Aguarde ${resetInSeconds} segundos.`,
         },
         { status: 429 },
       );
@@ -120,10 +118,10 @@ export async function POST(request: Request) {
     if (!cnpjData || !cnpjData.cnpj) {
       logger.warn(
         { userId: user.id },
-        "Dados do CNPJ não fornecidos na requisição",
+        "Dados do CNPJ nao fornecidos na requisicao",
       );
       return NextResponse.json(
-        { error: "Dados do CNPJ não fornecidos" },
+        { error: "Dados do CNPJ nao fornecidos" },
         { status: 400 },
       );
     }
@@ -144,7 +142,8 @@ export async function POST(request: Request) {
       )
       .limit(1);
 
-    let creditConsumed = false;
+    let documentId: string;
+    let emitidoEm: Date;
 
     if (!existingDocument) {
       const hasCredits = await hasAvailableCredits(user.id);
@@ -152,12 +151,12 @@ export async function POST(request: Request) {
       if (!hasCredits) {
         logger.warn(
           { userId: user.id, cnpj: cnpjMasked },
-          "Usuário sem créditos para gerar PDF",
+          "Usuario sem creditos para gerar PDF",
         );
         return NextResponse.json(
           {
             error:
-              "Você não tem créditos disponíveis. Adquira mais créditos para continuar.",
+              "Voce nao tem creditos disponiveis. Adquira mais creditos para continuar.",
           },
           { status: 402 },
         );
@@ -169,8 +168,6 @@ export async function POST(request: Request) {
         `Download PDF CNPJ ${cnpjData.cnpj}`,
       );
 
-      creditConsumed = creditResult.consumed;
-
       const [newDocument] = await db
         .insert(issuedDocuments)
         .values({
@@ -180,77 +177,53 @@ export async function POST(request: Request) {
         })
         .returning();
 
+      documentId = newDocument.id;
+      emitidoEm = new Date();
+
       logger.info(
         {
           userId: user.id,
           cnpj: cnpjMasked,
-          documentId: newDocument.id,
-          creditConsumed,
+          documentId,
+          creditConsumed: creditResult.consumed,
           creditsRemaining: creditResult.remainingCredits,
         },
-        "PDF gerado e crédito consumido",
+        "PDF gerado e credito consumido",
       );
-
-      const qrCodeDataUrl = await generateQRCodeDataUrl(newDocument.id);
-
-      const pdfBuffer = await renderToBuffer(
-        CartaoCNPJ({
-          data: cnpjData,
-          emitidoEm: new Date(),
-          documentId: newDocument.id,
-          qrCodeDataUrl,
-        }),
-      );
-
-      logger.info(
-        { userId: user.id, cnpj: cnpjMasked, documentId: newDocument.id },
-        "PDF gerado com UUID e QR Code",
-      );
-
-      return new NextResponse(new Uint8Array(pdfBuffer), {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="cartao-cnpj-${cnpjData.cnpj}.pdf"`,
-        },
-      });
     } else {
+      documentId = existingDocument.id;
+      emitidoEm = existingDocument.issuedAt;
+
       logger.info(
         {
           userId: user.id,
           cnpj: cnpjMasked,
-          documentId: existingDocument.id,
+          documentId,
         },
-        "Re-download de PDF (sem consumo de crédito)",
+        "Re-download de PDF (sem consumo de credito)",
       );
-
-      const qrCodeDataUrl = await generateQRCodeDataUrl(existingDocument.id);
-
-      const pdfBuffer = await renderToBuffer(
-        CartaoCNPJ({
-          data: cnpjData,
-          emitidoEm: existingDocument.issuedAt,
-          documentId: existingDocument.id,
-          qrCodeDataUrl,
-        }),
-      );
-
-      logger.info(
-        { userId: user.id, cnpj: cnpjMasked, documentId: existingDocument.id },
-        "PDF gerado com UUID existente",
-      );
-
-      return new NextResponse(new Uint8Array(pdfBuffer), {
-        headers: {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": `attachment; filename="cartao-cnpj-${cnpjData.cnpj}.pdf"`,
-        },
-      });
     }
+
+    const qrCodeDataUrl = await generateQRCodeDataUrl(documentId);
+
+    const html = renderCartaoCNPJToHTML({
+      data: cnpjData,
+      emitidoEm,
+      documentId,
+      qrCodeDataUrl,
+    });
+
+    const pdfBuffer = await generatePDFFromHTML(html);
+
+    return new NextResponse(new Uint8Array(pdfBuffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="cartao-cnpj-${cnpjData.cnpj}.pdf"`,
+      },
+    });
   } catch (error) {
-    logger.error(
-      { error, operation: "generateAuthenticatedPDF" },
-      "Erro ao gerar PDF",
-    );
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error({ errorMessage }, "Erro ao gerar PDF");
     return NextResponse.json({ error: "Erro ao gerar PDF" }, { status: 500 });
   }
 }
