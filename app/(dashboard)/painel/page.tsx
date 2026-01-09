@@ -1,8 +1,10 @@
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { DashboardQuery } from "@/components/cnpj/dashboard-query";
 import { Icons } from "@/components/icons";
+import { CreditBalanceSkeleton } from "@/components/ui/skeletons";
 import { getCurrentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { userCredits } from "@/lib/db/schema";
@@ -13,6 +15,39 @@ export const metadata = {
   description: "Seu painel de controle",
 };
 
+async function CreditBadge({ userId }: { userId: string }) {
+  const [credits] = await db
+    .select()
+    .from(userCredits)
+    .where(eq(userCredits.userId, userId));
+
+  const availableCredits = credits?.availableCredits || 0;
+
+  return (
+    <>
+      <DashboardTracker availableCredits={availableCredits} />
+      <div className="flex items-center gap-4 flex-wrap">
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-card rounded-lg border border-border min-w-50">
+          <div className="flex items-center gap-2">
+            <Icons.zap className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-foreground">
+              {availableCredits} créditos
+            </span>
+          </div>
+          <Link
+            href="/uso"
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Detalhes
+            <Icons.chevronRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
+      <DashboardQuery availableCredits={availableCredits} />
+    </>
+  );
+}
+
 export default async function PainelPage() {
   const user = await getCurrentUser();
 
@@ -20,16 +55,8 @@ export default async function PainelPage() {
     redirect("/login");
   }
 
-  const [credits] = await db
-    .select()
-    .from(userCredits)
-    .where(eq(userCredits.userId, user.id));
-
-  const availableCredits = credits?.availableCredits || 0;
-
   return (
     <div className="min-h-screen p-4 md:p-8 bg-background">
-      <DashboardTracker availableCredits={availableCredits} />
       <div className="max-w-5xl mx-auto space-y-8">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
@@ -40,25 +67,20 @@ export default async function PainelPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center justify-between gap-4 px-4 py-3 bg-card rounded-lg border border-border min-w-50">
-            <div className="flex items-center gap-2">
-              <Icons.zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-foreground">
-                {availableCredits} créditos
-              </span>
-            </div>
-            <Link
-              href="/uso"
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Detalhes
-              <Icons.chevronRight className="w-3 h-3" />
-            </Link>
-          </div>
-        </div>
-
-        <DashboardQuery availableCredits={availableCredits} />
+        <Suspense
+          fallback={
+            <>
+              <CreditBalanceSkeleton />
+              <div className="bg-card rounded-lg border border-border p-6 animate-pulse">
+                <div className="h-6 w-48 bg-muted rounded mb-4" />
+                <div className="h-12 w-full bg-muted rounded mb-4" />
+                <div className="h-10 w-32 bg-muted rounded" />
+              </div>
+            </>
+          }
+        >
+          <CreditBadge userId={user.id} />
+        </Suspense>
 
         <div className="grid md:grid-cols-3 gap-4">
           <Link
