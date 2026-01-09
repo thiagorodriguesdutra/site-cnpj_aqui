@@ -1,5 +1,3 @@
-"use client";
-
 import Script from "next/script";
 
 import { publicEnv } from "@/lib/env.public";
