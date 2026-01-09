@@ -8,13 +8,19 @@ import "./globals.css";
 const manrope = Manrope({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
+  fallback: ["system-ui", "arial"],
 });
 
 const sourceCodePro = Source_Code_Pro({
   variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
+  preload: true,
+  fallback: ["Menlo", "Monaco", "monospace"],
 });
 
 export const viewport: Viewport = {
