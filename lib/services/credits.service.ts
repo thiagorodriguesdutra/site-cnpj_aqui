@@ -173,6 +173,45 @@ export async function getCreditTransactions(
   return transactions;
 }
 
+export interface PaginatedTransactions {
+  transactions: CreditTransaction[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export async function getCreditTransactionsPaginated(
+  userId: string,
+  page = 1,
+  pageSize = 25,
+): Promise<PaginatedTransactions> {
+  const offset = (page - 1) * pageSize;
+
+  const [countResult] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(creditTransactions)
+    .where(eq(creditTransactions.userId, userId));
+
+  const total = countResult?.count ?? 0;
+
+  const transactions = await db
+    .select()
+    .from(creditTransactions)
+    .where(eq(creditTransactions.userId, userId))
+    .orderBy(desc(creditTransactions.createdAt))
+    .limit(pageSize)
+    .offset(offset);
+
+  return {
+    transactions,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  };
+}
+
 export async function initializeUserCredits(userId: string): Promise<void> {
   const existingCredits = await getUserCredits(userId);
 

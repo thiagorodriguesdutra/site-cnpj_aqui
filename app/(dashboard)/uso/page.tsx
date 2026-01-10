@@ -14,9 +14,10 @@ import { TransactionListSkeleton } from "@/components/ui/skeletons";
 import { getCurrentUser } from "@/lib/auth";
 import {
   getCreditBalance,
-  getCreditTransactions,
+  getCreditTransactionsPaginated,
 } from "@/lib/services/credits.service";
 import { SuccessNotification } from "./success-notification";
+import { TransactionList } from "./transaction-list";
 import { UsageTracker } from "./usage-tracker";
 
 export const metadata = {
@@ -101,102 +102,26 @@ async function CreditBalance({ userId }: { userId: string }) {
   );
 }
 
-function getTransactionIcon(type: string) {
-  switch (type) {
-    case "usage":
-      return <Icons.arrowDown className="h-4 w-4 text-destructive" />;
-    case "purchase":
-      return <Icons.arrowUp className="h-4 w-4 text-success" />;
-    case "bonus":
-      return <Icons.gift className="h-4 w-4 text-primary" />;
-    case "refund":
-      return <Icons.arrowUp className="h-4 w-4 text-info" />;
-    default:
-      return <Icons.circle className="h-4 w-4 text-muted-foreground" />;
-  }
+interface TransactionListWrapperProps {
+  userId: string;
+  page: number;
+  pageSize: number;
 }
 
-function getTransactionLabel(type: string) {
-  switch (type) {
-    case "usage":
-      return "Uso";
-    case "purchase":
-      return "Compra";
-    case "bonus":
-      return "Bônus";
-    case "refund":
-      return "Reembolso";
-    default:
-      return type;
-  }
-}
-
-async function TransactionList({ userId }: { userId: string }) {
-  const { formatDistanceToNow } = await import("date-fns");
-  const { ptBR } = await import("date-fns/locale");
-  const transactions = await getCreditTransactions(userId, 10);
+async function TransactionListWrapper({
+  userId,
+  page,
+  pageSize,
+}: TransactionListWrapperProps) {
+  const data = await getCreditTransactionsPaginated(userId, page, pageSize);
 
   return (
-    <div className="bg-card rounded-xl border border-border">
-      <div className="p-6 border-b border-border">
-        <h2 className="text-lg font-semibold text-foreground">
-          Histórico de Transações
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Últimas {transactions.length} transações
-        </p>
-      </div>
-
-      <div className="divide-y divide-border">
-        {transactions.length === 0 ? (
-          <div className="p-12 text-center">
-            <Icons.activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-sm text-muted-foreground">
-              Nenhuma transação ainda
-            </p>
-          </div>
-        ) : (
-          transactions.map((transaction) => (
-            <div
-              key={transaction.id}
-              className="p-4 hover:bg-muted/30 transition-colors"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {getTransactionIcon(transaction.type)}
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
-                      {transaction.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(transaction.createdAt), {
-                        addSuffix: true,
-                        locale: ptBR,
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-sm font-semibold ${
-                      transaction.amount > 0
-                        ? "text-success"
-                        : "text-destructive"
-                    }`}
-                  >
-                    {transaction.amount > 0 ? "+" : ""}
-                    {transaction.amount}
-                  </span>
-                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground">
-                    {getTransactionLabel(transaction.type)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+    <TransactionList
+      transactions={data.transactions}
+      total={data.total}
+      page={data.page}
+      pageSize={data.pageSize}
+    />
   );
 }
 
@@ -221,17 +146,25 @@ function CreditBalanceSkeleton() {
   );
 }
 
-export default async function UsoPage() {
+interface UsoPageProps {
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
+}
+
+export default async function UsoPage({ searchParams }: UsoPageProps) {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/login");
   }
 
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page) || 1);
+  const pageSize = Math.min(100, Math.max(10, Number(params.pageSize) || 25));
+
   return (
     <div className="min-h-screen p-8 bg-background">
       <div className="max-w-5xl mx-auto space-y-8">
-        {/* Breadcrumb e título renderizam imediatamente (LCP) */}
+        {/* Breadcrumb e titulo renderizam imediatamente (LCP) */}
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -239,15 +172,15 @@ export default async function UsoPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Uso & Cobrança</BreadcrumbPage>
+              <BreadcrumbPage>Uso e Cobranca</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Uso & Cobrança</h1>
+          <h1 className="text-3xl font-bold text-foreground">Uso e Cobranca</h1>
           <p className="text-muted-foreground mt-1">
-            Gerencie seus créditos e pagamentos
+            Gerencie seus creditos e pagamentos
           </p>
         </div>
 
@@ -258,9 +191,13 @@ export default async function UsoPage() {
           <CreditBalance userId={user.id} />
         </Suspense>
 
-        {/* Suspense para transações - carrega em paralelo */}
+        {/* Suspense para transacoes - carrega em paralelo */}
         <Suspense fallback={<TransactionListSkeleton />}>
-          <TransactionList userId={user.id} />
+          <TransactionListWrapper
+            userId={user.id}
+            page={page}
+            pageSize={pageSize}
+          />
         </Suspense>
       </div>
     </div>
