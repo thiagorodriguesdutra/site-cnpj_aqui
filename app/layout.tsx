@@ -38,11 +38,11 @@ export const metadata: Metadata = {
     publicEnv.NEXT_PUBLIC_APP_URL || "https://www.cnpjaqui.com.br",
   ),
   title: {
-    default: "CNPJ Aqui - Gere o Cartão CNPJ em segundos",
+    default: "CNPJ Aqui - Cartão CNPJ organizado para uso profissional",
     template: "%s | CNPJ Aqui",
   },
   description:
-    "Gere o Cartão CNPJ oficial em PDF sem acessar o site da Receita Federal. Rápido, confiável e sem captcha.",
+    "Organize dados públicos do CNPJ em PDF para uso profissional. Consulta rápida, sem captcha e com histórico.",
   applicationName: "CNPJ Aqui",
   formatDetection: {
     telephone: false,

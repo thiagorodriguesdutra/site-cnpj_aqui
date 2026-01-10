@@ -1,7 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 
-const publicRoutes = ["/", "/login", "/termos", "/auth/callback"];
+const publicRoutes = [
+  "/",
+  "/cartao-cnpj",
+  "/login",
+  "/termos",
+  "/auth/callback",
+];
 const publicRoutePrefixes = ["/validar/", "/blog"];
 // Rotas que redirecionam para /painel se autenticado
 const authRoutes = ["/", "/login"];

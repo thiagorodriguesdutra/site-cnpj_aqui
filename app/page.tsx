@@ -13,15 +13,13 @@ const appUrl = publicEnv.NEXT_PUBLIC_APP_URL || "https://www.cnpjfacil.com.br";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
-  title: "CNPJ Aqui - Emita o Cartão CNPJ Oficial em PDF em 2 segundos",
+  title: "CNPJ Aqui — Cartão CNPJ organizado para uso profissional",
   description:
-    "Gere PDFs oficiais com QR Code de verificação. Ideal para contadores, cartórios e bancos. Sem burocracia.",
+    "Consulte, organize e apresente dados do CNPJ sem dor de cabeça. Dados públicos da Receita Federal em PDF fácil de usar.",
   keywords: [
     "cartão cnpj",
-    "gerar cartão cnpj",
-    "cnpj pdf",
     "consulta cnpj",
-    "receita federal",
+    "cnpj pdf",
     "comprovante cnpj",
     "cnpj online",
     "mei",
@@ -44,24 +42,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: appUrl,
-    title: "CNPJ Aqui - Emita o Cartão CNPJ Oficial em PDF em 2 segundos",
+    title: "CNPJ Aqui — Cartão CNPJ organizado para uso profissional",
     description:
-      "Gere PDFs oficiais com QR Code de verificação. Ideal para contadores, cartórios e bancos. Sem burocracia.",
+      "Consulte, organize e apresente dados do CNPJ sem dor de cabeça. Dados públicos da Receita Federal em PDF fácil de usar.",
     siteName: "CNPJ Aqui",
     images: [
       {
         url: `${appUrl}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "CNPJ Aqui - Gere o Cartão CNPJ em segundos",
+        alt: "CNPJ Aqui - Cartão CNPJ organizado para uso profissional",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CNPJ Aqui - Emita o Cartão CNPJ Oficial em PDF em 2 segundos",
+    title: "CNPJ Aqui — Cartão CNPJ organizado para uso profissional",
     description:
-      "Gere PDFs oficiais com QR Code de verificação. Ideal para contadores, cartórios e bancos. Sem burocracia.",
+      "Consulte, organize e apresente dados do CNPJ sem dor de cabeça. Dados públicos da Receita Federal em PDF fácil de usar.",
     images: [`${appUrl}/og-image.png`],
   },
   alternates: {
@@ -84,12 +82,14 @@ export default function Home() {
             <div className="max-w-3xl mx-auto text-center space-y-8">
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                  Cartão CNPJ oficial em PDF,{" "}
-                  <span className="text-primary">pronto em segundos</span>
+                  Cartão CNPJ organizado para{" "}
+                  <span className="text-primary">
+                    banco, contrato e cadastro
+                  </span>
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                  Dados oficiais da Receita Federal, com QR Code de verificação.
-                  Documento aceito em bancos, cartórios e empresas.
+                  Consulte e apresente dados do CNPJ sem perder tempo nem passar
+                  aperto.
                 </p>
               </div>
 
@@ -97,16 +97,16 @@ export default function Home() {
 
               <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground pt-4">
                 <div className="flex items-center gap-2">
-                  <Icons.checkCircle className="w-4 h-4 text-primary" />
-                  <span>Dados Oficiais</span>
+                  <Icons.building className="w-4 h-4 text-primary" />
+                  <span>Dados públicos da Receita Federal</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icons.qrCode className="w-4 h-4 text-primary" />
-                  <span>QR Code de Autenticidade</span>
+                  <span>QR Code para conferência</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Icons.building className="w-4 h-4 text-primary" />
-                  <span>Aceito em Bancos</span>
+                  <Icons.checkCircle className="w-4 h-4 text-primary" />
+                  <span>Teste grátis</span>
                 </div>
               </div>
             </div>
@@ -118,8 +118,12 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center space-y-3 mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold">
-                  O jeito mais rápido de emitir Cartão CNPJ
+                  Por que isso existe?
                 </h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  O documento oficial existe. O problema começa quando você
+                  precisa usar ele.
+                </p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">
@@ -127,21 +131,24 @@ export default function Home() {
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                     <Icons.zap className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg">Rapidez</h3>
+                  <h3 className="font-semibold text-lg">
+                    Consulta rápida, sem travar
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    Consulta imediata e PDF pronto na hora, sem espera, sem
-                    captcha e sem instabilidade.
+                    Nada de captcha, erro ou ficar tentando várias vezes.
                   </p>
                 </div>
 
                 <div className="bg-card border border-border rounded-lg p-6 space-y-3">
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <Icons.shield className="w-6 h-6 text-primary" />
+                    <Icons.users className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg">Confiável</h3>
+                  <h3 className="font-semibold text-lg">
+                    QSA visível e organizado
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    Informações oficiais consultadas diretamente da base da
-                    Receita Federal, sempre atualizadas.
+                    O quadro societário aparece de forma clara, sem precisar
+                    procurar.
                   </p>
                 </div>
 
@@ -149,10 +156,11 @@ export default function Home() {
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                     <Icons.fileText className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg">Prático</h3>
+                  <h3 className="font-semibold text-lg">
+                    PDF fácil de entender
+                  </h3>
                   <p className="text-sm text-muted-foreground">
-                    PDF pronto para baixar, imprimir ou compartilhar sempre que
-                    precisar.
+                    Quem recebe o documento bate o olho e entende.
                   </p>
                 </div>
               </div>
@@ -165,7 +173,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center space-y-3 mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold">
-                  Simples e direto
+                  Como funciona
                 </h2>
               </div>
 
@@ -176,7 +184,7 @@ export default function Home() {
                       1
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Digite o CNPJ que você precisa consultar.
+                      Digite o CNPJ que você quer consultar.
                     </p>
                   </div>
                 </div>
@@ -187,8 +195,8 @@ export default function Home() {
                       2
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Buscamos os dados oficiais e geramos o Cartão CNPJ em PDF
-                      automaticamente.
+                      Buscamos os dados públicos disponíveis e organizamos tudo
+                      em um PDF.
                     </p>
                   </div>
                 </div>
@@ -199,7 +207,8 @@ export default function Home() {
                       3
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Baixe, imprima ou compartilhe o documento na hora.
+                      Baixe, envie ou consulte de novo quando precisar, sem
+                      gastar crédito outra vez.
                     </p>
                   </div>
                 </div>
@@ -213,7 +222,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto">
               <div className="text-center space-y-3 mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold">
-                  Feito para quem precisa de agilidade
+                  Para quem isso faz diferença
                 </h2>
               </div>
 
@@ -223,7 +232,8 @@ export default function Home() {
                   <div>
                     <h3 className="font-semibold">Contadores</h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Emissão recorrente de Cartões CNPJ para clientes.
+                      Menos tempo procurando informação, mais tempo atendendo
+                      cliente.
                     </p>
                   </div>
                 </div>
@@ -233,7 +243,7 @@ export default function Home() {
                   <div>
                     <h3 className="font-semibold">Escritórios e assessorias</h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Atendimento diário a múltiplas empresas.
+                      Documento mais claro para validações e processos internos.
                     </p>
                   </div>
                 </div>
@@ -243,7 +253,7 @@ export default function Home() {
                   <div>
                     <h3 className="font-semibold">MEIs e pequenas empresas</h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Comprovante rápido para bancos e fornecedores.
+                      CNPJ organizado para banco, fornecedor e cadastro.
                     </p>
                   </div>
                 </div>
@@ -253,7 +263,7 @@ export default function Home() {
                   <div>
                     <h3 className="font-semibold">Prestadores de serviço PJ</h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Uso frequente em contratos, cadastros e validações.
+                      Arquivo limpo para contratos e comprovações.
                     </p>
                   </div>
                 </div>
@@ -265,19 +275,25 @@ export default function Home() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
+              <div className="text-center space-y-3 mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold">
+                  Pensado para quem usa no celular
+                </h2>
+              </div>
               <div className="bg-linear-to-br from-primary/5 to-accent/5 border border-border rounded-xl p-8 md:p-12">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                      <Icons.shield className="w-4 h-4" />
-                      Confiável
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-bold">
-                      Documento confiável para uso profissional
-                    </h2>
                     <p className="text-muted-foreground">
-                      Nosso Cartão CNPJ é o único com QR Code para validação
-                      online.
+                      Muita consulta de CNPJ acontece fora do computador: no
+                      banco, no cartório, em atendimento ou reunião.
+                    </p>
+                    <p className="text-muted-foreground">
+                      O site oficial até abre no celular, mas exige zoom,
+                      rolagem e paciência.
+                    </p>
+                    <p className="font-medium">
+                      Aqui o documento já sai legível no celular, sem ficar
+                      ajustando tela ou aumentando letra.
                     </p>
                   </div>
 
@@ -285,20 +301,18 @@ export default function Home() {
                     <div className="flex items-start gap-3">
                       <Icons.checkCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                       <p className="font-medium">
-                        Dados oficiais sempre atualizados
+                        Histórico de consultas: tudo fica salvo no seu painel
                       </p>
                     </div>
                     <div className="flex items-start gap-3">
                       <Icons.checkCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                       <p className="font-medium">
-                        Layout padronizado e profissional
+                        Sem mensalidade: você compra créditos, usa quando quiser
                       </p>
                     </div>
                     <div className="flex items-start gap-3">
                       <Icons.checkCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <p className="font-medium">
-                        Aceito como comprovante por bancos, cartórios e empresas
-                      </p>
+                      <p className="font-medium">Créditos não expiram</p>
                     </div>
                   </div>
                 </div>
@@ -310,26 +324,31 @@ export default function Home() {
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="bg-card border border-border rounded-lg p-6 space-y-3">
-                  <h3 className="font-semibold text-lg">
-                    Histórico completo no seu painel
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Todas as consultas ficam salvas. Você pode acessar e baixar
-                    novamente qualquer Cartão CNPJ emitido sem gastar novos
-                    créditos.
-                  </p>
-                </div>
-                <div className="bg-card border border-border rounded-lg p-6 space-y-3">
-                  <h3 className="font-semibold text-lg">
-                    Pague apenas pelo que usar
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Sem mensalidade e sem compromisso. Você compra créditos por
-                    consulta, usa quando quiser e eles não expiram.
-                  </p>
-                </div>
+              <div className="text-center space-y-3 mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold">
+                  Transparência antes de qualquer coisa
+                </h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  O Cartão CNPJ pode ser emitido gratuitamente no site da
+                  Receita Federal. Se quiser entender melhor o que é esse
+                  documento e como funciona, veja{" "}
+                  <a
+                    href="/cartao-cnpj"
+                    className="underline underline-offset-4"
+                  >
+                    o que é o Cartão CNPJ
+                  </a>
+                  .
+                </p>
+              </div>
+              <div className="bg-card border border-border rounded-lg p-6">
+                <p className="text-sm text-muted-foreground text-center">
+                  Os dados do CNPJ são públicos e vêm da Receita Federal. O CNPJ
+                  Aqui não substitui a Receita nem "emite" documento oficial. O
+                  que muda é a forma como essas informações aparecem:
+                  organizadas em um PDF mais fácil de ler, enviar e usar no dia
+                  a dia profissional.
+                </p>
               </div>
             </div>
           </div>
@@ -349,70 +368,81 @@ export default function Home() {
               <div className="space-y-4">
                 <details className="bg-card border border-border rounded-lg p-6 group">
                   <summary className="font-semibold cursor-pointer flex items-center justify-between">
-                    O Cartão CNPJ gerado é válido como comprovante?
+                    O Cartão CNPJ é gratuito?
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Sim. O documento utiliza dados oficiais da Receita Federal,
-                    possui QR Code de verificação e é aceito como comprovante em
-                    bancos, cartórios e empresas.
+                    Sim. A consulta é gratuita no site da Receita Federal. Se
+                    quiser entender melhor a diferença entre o documento oficial
+                    e a versão organizada, veja{" "}
+                    <a
+                      href="/cartao-cnpj"
+                      className="underline underline-offset-4"
+                    >
+                      este guia sobre Cartão CNPJ
+                    </a>
+                    .
                   </p>
                 </details>
 
                 <details className="bg-card border border-border rounded-lg p-6 group">
                   <summary className="font-semibold cursor-pointer flex items-center justify-between">
-                    Os dados consultados são oficiais e atualizados?
+                    O documento é oficial?
+                    <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
+                  </summary>
+                  <p className="text-sm text-muted-foreground mt-4">
+                    Os dados são oficiais e públicos. O PDF é organizado pelo
+                    CNPJ Aqui para facilitar a leitura e o envio.
+                  </p>
+                </details>
+
+                <details className="bg-card border border-border rounded-lg p-6 group">
+                  <summary className="font-semibold cursor-pointer flex items-center justify-between">
+                    Os dados ficam atualizados?
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
                     Sim. Cada consulta busca as informações mais recentes
-                    disponíveis na base oficial no momento da emissão.
+                    disponíveis.
                   </p>
                 </details>
 
                 <details className="bg-card border border-border rounded-lg p-6 group">
                   <summary className="font-semibold cursor-pointer flex items-center justify-between">
-                    Preciso pagar mensalidade para usar?
+                    Preciso pagar mensalidade?
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Não obrigatoriamente. Você pode usar o CNPJ Aqui comprando
-                    créditos avulsos. Se preferir, também existem planos mensal
-                    e anual, que oferecem um custo menor por consulta.
+                    Não. Só paga quando precisar consultar.
                   </p>
                 </details>
 
                 <details className="bg-card border border-border rounded-lg p-6 group">
                   <summary className="font-semibold cursor-pointer flex items-center justify-between">
-                    As consultas ficam salvas para acesso futuro?
+                    As consultas ficam salvas?
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Sim. Todas as consultas ficam salvas no seu painel e podem
-                    ser acessadas novamente sem gastar novos créditos.
+                    Sim. Todas ficam no seu painel para acesso depois.
                   </p>
                 </details>
 
                 <details className="bg-card border border-border rounded-lg p-6 group">
                   <summary className="font-semibold cursor-pointer flex items-center justify-between">
-                    Como funciona o pagamento dos pacotes?
+                    Como funciona o pagamento?
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
-                    O pagamento é feito via PIX e os créditos são liberados
-                    automaticamente após a confirmação.
+                    Via PIX, com liberação automática.
                   </p>
                 </details>
 
                 <details className="bg-card border border-border rounded-lg p-6 group">
                   <summary className="font-semibold cursor-pointer flex items-center justify-between">
-                    Os créditos têm data de expiração?
+                    Os créditos expiram?
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
-                  <p className="text-sm text-muted-foreground mt-4">
-                    Não. Os créditos não expiram e podem ser usados quando você
-                    precisar.
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-4">Não.</p>
                 </details>
 
                 <details className="bg-card border border-border rounded-lg p-6 group">
@@ -421,8 +451,7 @@ export default function Home() {
                     <Icons.chevronDown className="w-5 h-5 text-muted-foreground transition-transform group-open:rotate-180" />
                   </summary>
                   <p className="text-sm text-muted-foreground mt-4">
-                    Sim. Os créditos de diferentes pacotes são acumulados no seu
-                    saldo total.
+                    Sim. Os créditos se acumulam.
                   </p>
                 </details>
               </div>
@@ -434,11 +463,11 @@ export default function Home() {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold">
-                Precisa do Cartão CNPJ agora?
+                Precisa consultar um CNPJ agora?
               </h2>
               <p className="text-lg text-muted-foreground">
-                Comece com 3 consultas gratuitas e veja como é simples emitir
-                seu Cartão CNPJ em PDF.
+                Comece com 3 consultas gratuitas e veja se isso facilita o seu
+                dia a dia.
               </p>
               <a
                 href="/login"

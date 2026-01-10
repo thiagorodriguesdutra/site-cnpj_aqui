@@ -9,7 +9,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/login", "/termos", "/blog", "/validar/*"],
+        allow: [
+          "/",
+          "/cartao-cnpj",
+          "/login",
+          "/termos",
+          "/blog",
+          "/validar/*",
+        ],
         disallow: [
           "/painel",
           "/uso",

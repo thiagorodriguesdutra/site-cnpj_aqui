@@ -2,10 +2,6 @@ import type { ReactNode } from "react";
 import { PublicFooter } from "@/components/public/footer";
 import { PublicHeader } from "@/components/public/header";
 
-/**
- * Layout Server Component para o blog.
- * Headers e footers são Server Components para melhor performance.
- */
 export default function BlogLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">

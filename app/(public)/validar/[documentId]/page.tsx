@@ -73,18 +73,18 @@ export default async function ValidatePage({
           </div>
 
           <h1 className="text-4xl font-bold mb-3">
-            Documento Autêntico e Verificado.
+            Documento emitido pelo CNPJ Aqui
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Este Cartão CNPJ foi gerado legitimamente pela plataforma CNPJ Aqui
-            em{" "}
-            <span className="font-semibold text-foreground">{dataEmissao}</span>{" "}
-            e reflete fielmente os dados da Receita Federal naquele momento.
+            Este Cartão CNPJ foi emitido pela plataforma CNPJ Aqui em{" "}
+            <span className="font-semibold text-foreground">{dataEmissao}</span>
+            , com base em dados públicos disponíveis na Receita Federal naquele
+            momento.
           </p>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-8 mb-8 shadow-sm">
+        <div className="bg-card border border-border rounded-lg p-8 mb-6 shadow-sm">
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
@@ -102,14 +102,14 @@ export default async function ValidatePage({
 
             <div>
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                Data e Hora de Emissão
+                Data e hora da emissão
               </h3>
               <p className="text-base">{dataEmissao}</p>
             </div>
 
             <div>
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                Status na Data da Emissão
+                Situação cadastral na data da emissão
               </h3>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10">
                 <span className="text-sm font-semibold text-primary">
@@ -120,13 +120,22 @@ export default async function ValidatePage({
           </div>
         </div>
 
+        <div className="bg-muted/40 border border-border rounded-lg p-6 mb-10 text-sm text-muted-foreground text-center">
+          <p>
+            Este documento registra as informações públicas do CNPJ no momento
+            da consulta.
+            <br />
+            Ele não substitui a verificação direta no site da Receita Federal.
+          </p>
+        </div>
+
         <div className="text-center mb-12">
           <Link
             href={`/api/pdf/cartao-cnpj?documentId=${documentId}`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors"
           >
             <Icons.download className="w-5 h-5" />
-            Baixar documento original (PDF)
+            Baixar PDF emitido
           </Link>
         </div>
 
@@ -138,14 +147,14 @@ export default async function ValidatePage({
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-lg font-semibold hover:bg-foreground/90 transition-colors"
           >
-            Faça sua busca grátis
+            Fazer consulta grátis
             <Icons.chevronRight className="w-4 h-4" />
           </Link>
         </div>
 
         <div className="text-center mt-12 text-sm text-muted-foreground">
           <p>
-            Documento validado por{" "}
+            Documento emitido pelo{" "}
             <Link href="/" className="font-semibold hover:underline">
               CNPJ Aqui
             </Link>
