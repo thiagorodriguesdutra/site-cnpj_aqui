@@ -24,25 +24,28 @@ function setSecurityHeaders(
 ): NextResponse {
   const isDevelopment = process.env.NODE_ENV === "development";
 
-  const cspDirectives = [
-    "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' ${isDevelopment ? "'unsafe-eval'" : ""} https://cloud.umami.is https://*.google.com https://*.gstatic.com`,
-    `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://*.google.com https://*.gstatic.com`,
-    "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https: blob:",
-    "font-src 'self' data:",
-    "connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://brasilapi.com.br https://www.receitaws.com.br https://*.google.com https://*.gstatic.com",
-    "worker-src 'self' blob:",
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "upgrade-insecure-requests",
-  ];
+  // Pular CSP em desenvolvimento para evitar problemas com CORS em rede local
+  if (!isDevelopment) {
+    const cspDirectives = [
+      "default-src 'self'",
+      `script-src 'self' 'nonce-${nonce}' https://cloud.umami.is https://*.google.com https://*.gstatic.com`,
+      `script-src-elem 'self' 'unsafe-inline' https://cloud.umami.is https://*.google.com https://*.gstatic.com`,
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https: blob:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://brasilapi.com.br https://www.receitaws.com.br https://*.google.com https://*.gstatic.com",
+      "worker-src 'self' blob:",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests",
+    ];
 
-  response.headers.set(
-    "Content-Security-Policy",
-    cspDirectives.join("; ").trim(),
-  );
+    response.headers.set(
+      "Content-Security-Policy",
+      cspDirectives.join("; ").trim(),
+    );
+  }
 
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "DENY");
