@@ -30,10 +30,12 @@ import {
   Moon,
   MoreHorizontal,
   Plus,
+  Printer,
   QrCode,
   RefreshCw,
   Search,
   Settings,
+  Share2,
   Shield,
   Sun,
   TrendingDown,
@@ -91,6 +93,8 @@ export const Icons = {
   checkCircle: CheckCircle,
   sun: Sun,
   moon: Moon,
+  share: Share2,
+  printer: Printer,
 
   google: (props: IconProps) => (
     <svg viewBox="0 0 24 24" aria-hidden="true" {...props}>

@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  allowedDevOrigins: ["localhost", "192.168.18.38"],
   serverExternalPackages: [
     "pino",
     "pino-pretty",

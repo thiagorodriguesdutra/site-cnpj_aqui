@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
+import { useShareCapability } from "@/lib/hooks/use-share-capability";
 import { createClientLogger } from "@/lib/logger/client";
 import type { CnpjData } from "@/lib/services/cnpj.service";
 import { maskCNPJ } from "@/lib/utils";
@@ -31,9 +32,13 @@ function formatDate(date: string): string {
 
 export function QueryResult({ data, onNew }: QueryResultProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showCreditAlert, setShowCreditAlert] = useState(false);
   const router = useRouter();
+  const { canShareFiles, isLoading: isLoadingCapability } =
+    useShareCapability();
 
   async function handleDownloadPDF() {
     setIsDownloading(true);
@@ -93,6 +98,148 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
       setErrorMessage("Erro ao gerar PDF. Tente novamente.");
     } finally {
       setIsDownloading(false);
+    }
+  }
+
+  async function handleShare() {
+    setIsSharing(true);
+    setErrorMessage(null);
+    setShowCreditAlert(false);
+
+    try {
+      const response = await fetch("/api/pdf/cartao-cnpj", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 402) {
+          const error = await response.json();
+          logger.warn(
+            { status: response.status, cnpj: maskCNPJ(data.cnpj) },
+            "Sem creditos para compartilhar",
+          );
+          setShowCreditAlert(true);
+          setErrorMessage(error.error || "Voce nao tem creditos disponiveis.");
+          router.refresh();
+          return;
+        }
+
+        logger.error(
+          { status: response.status, cnpj: maskCNPJ(data.cnpj) },
+          "Erro ao gerar PDF para compartilhamento",
+        );
+        throw new Error("Erro ao gerar PDF");
+      }
+
+      const blob = await response.blob();
+      const file = new File([blob], `cartao-cnpj-${data.cnpj}.pdf`, {
+        type: "application/pdf",
+      });
+
+      await navigator.share({
+        files: [file],
+        title: "Cartao CNPJ",
+        text: `Cartao CNPJ - ${data.razaoSocial}`,
+      });
+
+      const { events } = await import("@/lib/analytics/umami");
+      events.pdfGenerated(data.cnpj);
+
+      logger.info(
+        { cnpj: maskCNPJ(data.cnpj) },
+        "PDF compartilhado com sucesso",
+      );
+      router.refresh();
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        logger.info(
+          { cnpj: maskCNPJ(data.cnpj) },
+          "Compartilhamento cancelado pelo usuario",
+        );
+        return;
+      }
+
+      logger.error(
+        { error, cnpj: maskCNPJ(data.cnpj), operation: "sharePDF" },
+        "Erro ao compartilhar PDF",
+      );
+      setErrorMessage("Erro ao compartilhar. Tente novamente.");
+    } finally {
+      setIsSharing(false);
+    }
+  }
+
+  async function handlePrint() {
+    setIsPrinting(true);
+    setErrorMessage(null);
+    setShowCreditAlert(false);
+
+    try {
+      const response = await fetch("/api/pdf/cartao-cnpj/print", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 402) {
+          const error = await response.json();
+          logger.warn(
+            { status: response.status, cnpj: maskCNPJ(data.cnpj) },
+            "Sem creditos para imprimir",
+          );
+          setShowCreditAlert(true);
+          setErrorMessage(error.error || "Voce nao tem creditos disponiveis.");
+          router.refresh();
+          return;
+        }
+
+        logger.error(
+          { status: response.status, cnpj: maskCNPJ(data.cnpj) },
+          "Erro ao gerar HTML para impressao",
+        );
+        throw new Error("Erro ao preparar impressao");
+      }
+
+      const html = await response.text();
+      const printWindow = window.open("", "_blank");
+
+      if (!printWindow) {
+        logger.warn(
+          { cnpj: maskCNPJ(data.cnpj) },
+          "Popup bloqueado pelo navegador",
+        );
+        setErrorMessage(
+          "Popup bloqueado. Permita popups para este site e tente novamente.",
+        );
+        return;
+      }
+
+      printWindow.document.write(html);
+      printWindow.document.close();
+
+      const { events } = await import("@/lib/analytics/umami");
+      events.pdfGenerated(data.cnpj);
+
+      logger.info(
+        { cnpj: maskCNPJ(data.cnpj) },
+        "Impressao iniciada com sucesso",
+      );
+      router.refresh();
+    } catch (error) {
+      logger.error(
+        { error, cnpj: maskCNPJ(data.cnpj), operation: "printHTML" },
+        "Erro ao imprimir",
+      );
+      setErrorMessage("Erro ao preparar impressao. Tente novamente.");
+    } finally {
+      setIsPrinting(false);
     }
   }
 
@@ -201,10 +348,10 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <Button
           onClick={handleDownloadPDF}
-          disabled={isDownloading}
+          disabled={isDownloading || isSharing || isPrinting}
           className="flex-1 gap-2"
         >
           {isDownloading ? (
@@ -215,10 +362,51 @@ export function QueryResult({ data, onNew }: QueryResultProps) {
           ) : (
             <>
               <Icons.download className="w-4 h-4" />
-              Baixar Cartão CNPJ (PDF)
+              Baixar PDF
             </>
           )}
         </Button>
+
+        {!isLoadingCapability &&
+          (canShareFiles ? (
+            <Button
+              onClick={handleShare}
+              disabled={isDownloading || isSharing || isPrinting}
+              variant="outline"
+              className="flex-1 gap-2"
+            >
+              {isSharing ? (
+                <>
+                  <Icons.spinner className="w-4 h-4 animate-spin" />
+                  Preparando...
+                </>
+              ) : (
+                <>
+                  <Icons.share className="w-4 h-4" />
+                  Compartilhar
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              onClick={handlePrint}
+              disabled={isDownloading || isSharing || isPrinting}
+              variant="outline"
+              className="flex-1 gap-2"
+            >
+              {isPrinting ? (
+                <>
+                  <Icons.spinner className="w-4 h-4 animate-spin" />
+                  Preparando...
+                </>
+              ) : (
+                <>
+                  <Icons.printer className="w-4 h-4" />
+                  Imprimir
+                </>
+              )}
+            </Button>
+          ))}
       </div>
     </div>
   );
