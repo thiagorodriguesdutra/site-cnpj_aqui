@@ -46,11 +46,17 @@ export function HeroSearchInput() {
             className="w-full h-12 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
           >
             <Icons.search className="w-5 h-5" />
-            Consultar CNPJ grátis
+            Gerar Cartão CNPJ grátis
           </button>
-          <p className="text-xs text-muted-foreground text-center">
-            3 consultas gratuitas para testar • Sem cartão de crédito
-          </p>
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground text-center">
+              3 consultas gratuitas • Sem cartão de crédito • Dados públicos da
+              Receita Federal
+            </p>
+            <p className="text-xs text-muted-foreground text-center">
+              Você decide quando usar seus créditos
+            </p>
+          </div>
         </div>
       </div>
     </div>

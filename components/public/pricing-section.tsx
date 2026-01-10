@@ -28,7 +28,7 @@ export async function PublicPricingSection() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-3 mb-12">
             <h2 className="text-3xl md:text-4xl font-bold">
-              Escolha seu pacote
+              Use grátis ou compre créditos quando precisar
             </h2>
           </div>
 
@@ -88,8 +88,8 @@ export async function PublicPricingSection() {
                   }`}
                 >
                   {isHighlighted && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
-                      Mais popular
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full whitespace-nowrap">
+                      Ideal para quem consulta CNPJ toda semana
                     </div>
                   )}
                   <div>
@@ -126,16 +126,10 @@ export async function PublicPricingSection() {
             })}
           </div>
 
-          <div className="mt-8 bg-card border border-border rounded-lg p-6">
-            <div className="text-center space-y-2">
-              <p className="text-sm font-medium text-foreground">
-                Pagamento via PIX
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Após a confirmação do pagamento, os créditos são liberados
-                automaticamente para uso imediato.
-              </p>
-            </div>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              Pagamento via PIX • Liberação automática
+            </p>
           </div>
         </div>
       </div>

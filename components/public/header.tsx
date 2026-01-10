@@ -16,17 +16,17 @@ export function PublicHeader() {
             Como funciona
           </a>
           <a
-            href="/#planos"
+            href="/#para-quem"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Planos
+            Para quem é
           </a>
-          <Link
-            href="/blog"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          <a
+            href="/#planos"
+            className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
           >
-            Blog
-          </Link>
+            Preços
+          </a>
           <a
             href="/#faq"
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
